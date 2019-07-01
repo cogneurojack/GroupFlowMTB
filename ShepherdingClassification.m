@@ -33,12 +33,14 @@ names = thisFile.textdata;
 % PARAMETERS: 
 %   dog1: [n,2] matrix of (x,y) positions for player 1 over n timepoints.
 %   dog2: [n,2] matrix of (x,y) positions for player 1 over n timepoints.
-dog1 = data(n,18:19)
-dog2 = data(n,19:20)
+dog1 = data(n,18:19);
+dog2 = data(n,19:20);
 %   polePos: [n, 2] matrix of (x,y) positions of the polar center over n
 %       timepoints. For static locations (such as a target center), the (x,y)
 %       position is the same for each row.
-polePos = data(n,THE CENTRAL PIXEL OF THE SCREEN)
+% polePos = data(n,THE CENTRAL PIXEL OF THE SCREEN)
+% THE CENTRAL PIXEL OF THE SCREEN)
+polPos = [1400 1050];
 %   NOTE: THE "Y" COLUMN FOR THE ABOVE PARAMETERS IS THE VERTICAL DIMENSION
 %   ON THE TASK SCREEN. (EXAMPLE PLAYERS BEGIN A TRIAL ON THE +Y OR -Y OF
 %   THE SCREEN.
@@ -49,6 +51,7 @@ polePos = data(n,THE CENTRAL PIXEL OF THE SCREEN)
 %       the strength of the classification. BY DEFAULT THE CUTOFF MOVEMENT
 %       FREQUENCY IS 0.5 HZ FOR CLASSIFICATION (SUCH THAT BEHAVIOR > 0.5 HZ
 %       IS CLASSIFIED AS COC).
+
 %   dog2Classification: player 2 behavior classification. Positive values
 %       indicate COC behavior, negative indicate S&R. The magnitude indicates
 %       the strength of the classification. BY DEFAULT THE CUTOFF MOVEMENT
