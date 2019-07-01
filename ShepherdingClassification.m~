@@ -30,15 +30,16 @@ n=1;
 
 names = thisFile.textdata;
 
-% PARAMETERS: 
-%   dog1: [n,2] matrix of (x,y) positions for player 1 over n timepoints.
-%   dog2: [n,2] matrix of (x,y) positions for player 1 over n timepoints.
+
+
 dog1 = data(n,18:19)
 dog2 = data(n,19:20)
+% PARAMETERS: 
+%   dog1: [n,2] matrix of (x,y) positions for player 1 over n timepoints.
+%   dog2: [n,2] matrix of (x,y) positions for player 2 over n timepoints.
 %   polePos: [n, 2] matrix of (x,y) positions of the polar center over n
 %       timepoints. For static locations (such as a target center), the (x,y)
 %       position is the same for each row.
-polePos = data(n,THE CENTRAL PIXEL OF THE SCREEN)
 %   NOTE: THE "Y" COLUMN FOR THE ABOVE PARAMETERS IS THE VERTICAL DIMENSION
 %   ON THE TASK SCREEN. (EXAMPLE PLAYERS BEGIN A TRIAL ON THE +Y OR -Y OF
 %   THE SCREEN.
