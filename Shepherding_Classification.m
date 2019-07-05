@@ -11,7 +11,7 @@ myFolderInfo = dir(dataFolder);
 
 numFiles = length(myFolderInfo);
 
-n = 3;
+n=3;
 while n < numFiles
 
 loadFile = myFolderInfo(n).name;
@@ -21,26 +21,25 @@ thisFile = importdata(loadFile);
 data = thisFile.data;
 
 
-n =n+1;
+n=n+1;
 end
 %--------------------------------------------------------------------------
 % CREATE THE PARAMETERS
-
-n=1;
 
 names = thisFile.textdata;
 
 % PARAMETERS: 
 %   dog1: [n,2] matrix of (x,y) positions for player 1 over n timepoints.
 %   dog2: [n,2] matrix of (x,y) positions for player 1 over n timepoints.
-dog1 = data(n,18:19);
-dog2 = data(n,19:20);
+dog1 = data(:,18:19);
+dog2 = data(:,19:20);
 %   polePos: [n, 2] matrix of (x,y) positions of the polar center over n
 %       timepoints. For static locations (such as a target center), the (x,y)
 %       position is the same for each row.
-% polePos = data(n,THE CENTRAL PIXEL OF THE SCREEN)
 % THE CENTRAL PIXEL OF THE SCREEN)
-polPos = [1400 1050;
+polePos = nan(length(data),2);
+PolePos(:,(1:2)) = [(1400/2) (1050/2)];
+
 %   NOTE: THE "Y" COLUMN FOR THE ABOVE PARAMETERS IS THE VERTICAL DIMENSION
 %   ON THE TASK SCREEN. (EXAMPLE PLAYERS BEGIN A TRIAL ON THE +Y OR -Y OF
 %   THE SCREEN.
@@ -59,17 +58,16 @@ polPos = [1400 1050;
 %       IS CLASSIFIED AS COC).
 %--------------------------------------------------------------------------
 
-
 function [dog1Classification, dog2Classification] = ShepherdingClassification(dog1, dog2, polePos)
 
 %GLOBAL PARAMETERS THAT NEED TO BE ADJUSTED BASED ON EXPERIMENTAL SETUP.
-samplerate = 50;    %FILE SAMPLE RATE.
-windowSize = 512;   %WINDOW SIZE FOR FREQUENCY SPECTRUM ANALYSSIS.
-windowOverlap = 0.5;    %OVERLAP WINDOW FOR FREQUENCY SPECTRUM ANALYSIS.
+samplerate = 50;     %FILE SAMPLE RATE.
+windowSize = 512;    %WINDOW SIZE FOR FREQUENCY SPECTRUM ANALYSSIS.
+windowOverlap = 0.5; %OVERLAP WINDOW FOR FREQUENCY SPECTRUM ANALYSIS.
 
 
 %% Convert Cartesian coordinates to Polar.
-[dog1_theta, dog2_theta] = CartesianToPolar(dog1, dog2, polePos);
+[dog1_theta, dog2_theta] = cart2pol(dog1, dog2, polePos);
 
 %% Filter Data using 4th Order Band-Pass Butterworth Filter. Filter above 10Hz
 butterOrder = 4;
@@ -106,7 +104,7 @@ dog1Classification = powerMax_1*(Freq1-0.5)/(abs(Freq1-0.5));
 dog2Classification = powerMax_2*(Freq2-0.5)/(abs(Freq2-0.5));
 end
 
-function [dog1_theta, dog2_theta] = CartesianToPolar(dog1, dog2, polePos)
+function [dog1_theta, dog2_theta] = cart2pol(dog1, dog2, polePos)
 
 %Center data from polar center.
 dog1 = dog1-polePos;
