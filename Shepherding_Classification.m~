@@ -39,9 +39,7 @@ dog2 = data(:,19:20);
 %       position is the same for each row.
 % THE CENTRAL PIXEL OF THE SCREEN)
 PolePos = nan(length(data),2);
-PolePosxy = [700 5025];
-PolePos(:,1)=PolePosxy(1);
-PolePos(:,1)=PolePosxy(2);
+PolePosxy = [700 5025];PolePos(:,1)=PolePosxy(1)
 
 %   NOTE: THE "Y" COLUMN FOR THE ABOVE PARAMETERS IS THE VERTICAL DIMENSION
 %   ON THE TASK SCREEN. (EXAMPLE PLAYERS BEGIN A TRIAL ON THE +Y OR -Y OF
@@ -61,7 +59,7 @@ PolePos(:,1)=PolePosxy(2);
 %       IS CLASSIFIED AS COC).
 %--------------------------------------------------------------------------
 
-function [dog1Classification, dog2Classification] = ShepherdingClassification(dog1, dog2, PolePos)
+function [dog1Classification, dog2Classification] = ShepherdingClassification(dog1, dog2, polePos)
 
 %GLOBAL PARAMETERS THAT NEED TO BE ADJUSTED BASED ON EXPERIMENTAL SETUP.
 samplerate = 50;     %FILE SAMPLE RATE.
@@ -70,7 +68,7 @@ windowOverlap = 0.5; %OVERLAP WINDOW FOR FREQUENCY SPECTRUM ANALYSIS.
 
 
 %% Convert Cartesian coordinates to Polar.
-[dog1_theta, dog2_theta] = cart2pol(dog1, dog2, PolePos);
+[dog1_theta, dog2_theta] = cart2pol(dog1, dog2, polePos);
 
 %% Filter Data using 4th Order Band-Pass Butterworth Filter. Filter above 10Hz
 butterOrder = 4;
@@ -107,11 +105,11 @@ dog1Classification = powerMax_1*(Freq1-0.5)/(abs(Freq1-0.5));
 dog2Classification = powerMax_2*(Freq2-0.5)/(abs(Freq2-0.5));
 end
 
-function [dog1_theta, dog2_theta] = cart2pol(dog1, dog2, PolePos)
+function [dog1_theta, dog2_theta] = cart2pol(dog1, dog2, polePos)
 
 %Center data from polar center.
-dog1 = dog1-PolePos;
-dog2 = dog2-PolePos;
+dog1 = dog1-polePos;
+dog2 = dog2-polePos;
 
 %Compute angle using ATAN2.
 dog1_theta = atan2(dog1(:,2), dog1(:,1));
