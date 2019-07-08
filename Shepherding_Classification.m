@@ -12,14 +12,21 @@ myFolderInfo = dir(dataFolder);
 
 numFiles = length(myFolderInfo);
 
+
 n=3;
 while n < numFiles
 
 loadFile = myFolderInfo(n).name;
-
-
 thisFile = importdata(loadFile);
 data = thisFile.data;
+
+
+% THE CENTRAL PIXEL OF THE SCREEN)
+PolePos = nan(length(data),2);
+PolePosxy = [700 5025];
+PolePos(:,1)=PolePosxy(1);
+PolePos(:,2)=PolePosxy(2);
+
 
 
 n=n+1;
@@ -37,11 +44,6 @@ dog2 = data(:,19:20);
 %   polePos: [n, 2] matrix of (x,y) positions of the polar center over n
 %       timepoints. For static locations (such as a target center), the (x,y)
 %       position is the same for each row.
-% THE CENTRAL PIXEL OF THE SCREEN)
-PolePos = nan(length(data),2);
-PolePosxy = [700 5025];
-PolePos(:,1)=PolePosxy(1);
-PolePos(:,2)=PolePosxy(2);
 
 %   NOTE: THE "Y" COLUMN FOR THE ABOVE PARAMETERS IS THE VERTICAL DIMENSION
 %   ON THE TASK SCREEN. (EXAMPLE PLAYERS BEGIN A TRIAL ON THE +Y OR -Y OF
@@ -62,6 +64,7 @@ PolePos(:,2)=PolePosxy(2);
 %--------------------------------------------------------------------------
 
 cd('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/GroupFlowMTB')
-[dog1_theta, dog2_theta] = cartesian2polar(dog1, dog2, PolePos);
-cd('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/GroupFlowMTB')
 [dog1Classification, dog2Classification]= ShepherdingClassification(dog1, dog2, PolePos);
+
+cd('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/GroupFlowMTB')
+[dog1_theta, dog2_theta] = cartesian2polar(dog1, dog2, PolePos);
