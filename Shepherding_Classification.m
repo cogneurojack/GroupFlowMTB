@@ -41,7 +41,7 @@ dog2 = data(:,19:20);
 PolePos = nan(length(data),2);
 PolePosxy = [700 5025];
 PolePos(:,1)=PolePosxy(1);
-PolePos(:,1)=PolePosxy(2);
+PolePos(:,2)=PolePosxy(2);
 
 %   NOTE: THE "Y" COLUMN FOR THE ABOVE PARAMETERS IS THE VERTICAL DIMENSION
 %   ON THE TASK SCREEN. (EXAMPLE PLAYERS BEGIN A TRIAL ON THE +Y OR -Y OF
@@ -60,7 +60,8 @@ PolePos(:,1)=PolePosxy(2);
 %       FREQUENCY IS 0.5 HZ FOR CLASSIFICATION (SUCH THAT BEHAVIOR > 0.5 HZ
 %       IS CLASSIFIED AS COC).
 %--------------------------------------------------------------------------
+
 cd('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/GroupFlowMTB')
-ShepherdingClassification(dog1, dog2, PolePos);
+[dog1_theta, dog2_theta] = cartesian2polar(dog1, dog2, PolePos);
 cd('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/GroupFlowMTB')
-cartesian2polar(dog1, dog2, PolePos);
+[dog1Classification, dog2Classification]= ShepherdingClassification(dog1, dog2, PolePos);

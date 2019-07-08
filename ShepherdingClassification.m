@@ -7,6 +7,7 @@ windowOverlap = 0.5; %OVERLAP WINDOW FOR FREQUENCY SPECTRUM ANALYSIS.
 
 
 %% Convert Cartesian coordinates to Polar.
+cd('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/GroupFlowMTB')
 [dog1_theta, dog2_theta] = cartesian2polar(dog1, dog2, PolePos);
 
 %% Filter Data using 4th Order Band-Pass Butterworth Filter. Filter above 10Hz
