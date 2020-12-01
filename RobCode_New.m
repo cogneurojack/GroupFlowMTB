@@ -114,7 +114,11 @@ while folder < numFolder+1
             
             winMatrix(frame,3:7) = winLog;
             
-            if sum(winLog) == 5; TotalSheepWinTime = TotalSheepWinTime+1;end
+            if sum(winLog) == 5 
+                TotalSheepWinTime = TotalSheepWinTime+1;
+            else
+                TotalSheepWinTime = TotalSheepWinTime;
+            end
             
             winMatrix(frame,8:9) = [TotalSheepWinTime 100*(TotalSheepWinTime/676)];
            
@@ -150,7 +154,7 @@ while folder < numFolder+1
         
         % work out the shepherding classification
         cd('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/GroupFlowMTB');
-      %  [dog1_theta, dog2_theta] = cartesian2polar(dog1, dog2, PolePos);
+        [dog1_theta, dog2_theta] = cartesian2polar(dog1, dog2, PolePos);
         [dog1Classification, dog2Classification]= ShepherdingClassification(dog1, dog2, PolePos);
         
         
@@ -232,9 +236,9 @@ while folder < numFolder+1
 %     writetable(subjOutput, outputName);
 %     folder = folder+1;
     
-
-allData = [subjOutput;allData];
-(folder/numFolder)*100
-folder = folder+1;
+% 
+% allData = [subjOutput;allData];
+% (folder/numFolder)*100
+% folder = folder+1;
 end
 

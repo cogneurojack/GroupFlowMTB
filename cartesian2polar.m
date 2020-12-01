@@ -8,3 +8,4 @@ dog2 = dog2-PolePos;
 dog1_theta = atan2(dog1(:,2), dog1(:,1));
 dog2_theta = atan2(dog2(:,2), dog1(:,1));
 end
+
