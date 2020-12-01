@@ -1,19 +1,16 @@
-function[dog1Classification, dog2Classification] = ShepherdingClassification(dog1, dog2, PolePos)
-
+function[dog1Classification, dog2Classification] = ShepherdingClassification(dog1_theta, dog2_theta)
 %GLOBAL PARAMETERS THAT NEED TO BE ADJUSTED BASED ON EXPERIMENTAL SETUP.
-samplerate = 50;     %FILE SAMPLE RATE.
-windowSize = 512;    %WINDOW SIZE FOR FREQUENCY SPECTRUM ANALYSSIS.
+samplerate = 15;     %FILE SAMPLE RATE.
+windowSize = 46;    %WINDOW SIZE FOR FREQUENCY SPECTRUM ANALYSSIS.
 windowOverlap = 0.5; %OVERLAP WINDOW FOR FREQUENCY SPECTRUM ANALYSIS.
 
-
-%% Convert Cartesian coordinates to Polar.
-cd('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/GroupFlowMTB')
-[dog1_theta, dog2_theta] = cartesian2polar(dog1, dog2, PolePos);
-
 %% Filter Data using 4th Order Band-Pass Butterworth Filter. Filter above 10Hz
-butterOrder = 4;
-highfilterCutoff = 10;
-[weight_b,weight_a] = butter(butterOrder,highfilterCutoff/(samplerate/2));
+
+% FEEL THIS PART MAY STILL NEED WORK AS WE CANNOT FILTER AT 15Hz AND UNSURE
+% HOW THE FILTER WILL AFFECT OUR DATA
+butterOrder = 1;
+highfilterCutoff = 1; % as ample rate is only 
+[weight_b,weight_a] = butter(butterOrder,highfilterCutoff/(samplerate));
 dog1Ang = filtfilt(weight_b,weight_a,dog1_theta);
 dog2Ang = filtfilt(weight_b,weight_a,dog2_theta);
 

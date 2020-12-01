@@ -109,19 +109,16 @@ while folder < numFolder+1
                 
                 % if the sheep is not in the circle for that frame then SheepIn = false
                 
-                winLog(sheep) = (SheepD>circle);
+                winLog(sheep) = double(SheepD>circle);
             end
             
             winMatrix(frame,3:7) = winLog;
             
-            if sum(winLog) == 5 
-                TotalSheepWinTime = TotalSheepWinTime+1;
-            else
-                TotalSheepWinTime = TotalSheepWinTime;
-            end
+            if sum(winLog) == 5; TotalSheepWinTime = TotalSheepWinTime+1;end
             
             winMatrix(frame,8:9) = [TotalSheepWinTime 100*(TotalSheepWinTime/676)];
            
+            dataFilesInfo(i).name
         end
         
         ifWin = double(TotalSheepWinTime >= 470);
@@ -144,8 +141,8 @@ while folder < numFolder+1
         
         % Central pixel of the screen for COC
         PolePosxy = [ScreenCenterX ScreenCenterY];
-        PolePos = nan(totalTime,1);
-        PolePos(:,1)=PolePosxy(1);
+        polePos = nan(totalTime,1);
+        polePos(:,1)=PolePosxy(1);
         names = thisFile.textdata;
         
         % create var for position of sheepdog to work out COC
@@ -154,8 +151,8 @@ while folder < numFolder+1
         
         % work out the shepherding classification
         cd('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/GroupFlowMTB');
-        [dog1_theta, dog2_theta] = cartesian2polar(dog1, dog2, PolePos);
-        [dog1Classification, dog2Classification]= ShepherdingClassification(dog1, dog2, PolePos);
+        [dog1_theta, dog2_theta] = cartesian2polar(dog1, dog2, polePos);
+        [dog1Classification, dog2Classification]= ShepherdingClassification(dog1_theta, dog2_theta);
         
         
         
@@ -223,7 +220,8 @@ while folder < numFolder+1
         end
         
         
- 
+
+        
         trial = trial+1;
         file = file+1;
         
@@ -236,9 +234,9 @@ while folder < numFolder+1
 %     writetable(subjOutput, outputName);
 %     folder = folder+1;
     
-% 
-% allData = [subjOutput;allData];
-% (folder/numFolder)*100
-% folder = folder+1;
+
+allData = [subjOutput;allData];
+(folder/numFolder)*100
+folder = folder+1;
 end
 
