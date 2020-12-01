@@ -16,7 +16,7 @@ circle = circle^2;
 %% LOAD EACH PAIRS FOLDER
 matrixFolder = '/Volumes/HYPERSCAN/groupFlow_S/';
 outputFolder = '/Volumes/HYPERSCAN/';
-
+infoMat=[];
 % % TEST FOLDERS
 % matrixFolder = '/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/Data/';
 % outputFolder = '/Users/jackmoore/Desktop/';
@@ -245,8 +245,8 @@ while folder < numFolder+1
 %     writetable(subjOutput, outputName);
 %     folder = folder+1;
 %     
-    InfoMatName = [outputFolder 'InfoMatrix.csv'];
-    InfoMat = [InfoMat;subjOutput];
-    writetable(subjOutput, outputName);
+    infoMatName = [outputFolder 'InfoMatrix.csv'];
+    infoMat = [InfoMat;subjOutput];
+    writetable(infoMat, infoMatName);
 end
 
