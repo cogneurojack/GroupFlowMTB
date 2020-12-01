@@ -15,7 +15,7 @@ circle = circle^2;
 
 %% LOAD EACH PAIRS FOLDER
 matrixFolder = '/Volumes/HYPERSCAN/groupFlow_S/';
-outputFolder = '/Volumes/HYPERSCAN/groupFlow_BehaveCheck/';
+outputFolder = '/Volumes/HYPERSCAN/';
 
 % % TEST FOLDERS
 % matrixFolder = '/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/Data/';
@@ -239,11 +239,14 @@ while folder < numFolder+1
     end
     
     %% SAVE EACH GROUP AS AN EXCEL FILE
-    % set headers for output data
-        
-    outputName = [outputFolder subjFolderName '.csv'];
+%     % set headers for output data
+%         
+%     outputName = [outputFolder subjFolderName '.csv'];
+%     writetable(subjOutput, outputName);
+%     folder = folder+1;
+%     
+    InfoMatName = [outputFolder 'InfoMatrix.csv'];
+    InfoMat = [InfoMat;subjOutput];
     writetable(subjOutput, outputName);
-    folder = folder+1;
-    
 end
 
