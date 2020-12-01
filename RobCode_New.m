@@ -246,7 +246,7 @@ while folder < numFolder+1
 %     folder = folder+1;
 %     
     infoMatName = [outputFolder 'InfoMatrix.csv'];
-    infoMat = [InfoMat;subjOutput];
+    infoMat = [infoMat;subjOutput];
     writetable(infoMat, infoMatName);
 end
 
