@@ -20,7 +20,7 @@ outputFolder = '/Volumes/HYPERSCAN/groupFlow_BehaveCheck/';
 % % TEST FOLDERS
 % matrixFolder = '/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/Data/';
 % outputFolder = '/Users/jackmoore/Desktop/';
-
+allData = [];
 
 cd(matrixFolder);
 matrixFolderInfo = dir(matrixFolder);
@@ -67,24 +67,22 @@ while folder < numFolder+1
 %% LOAD FILE AND SET OUTPUT FILE VAUES AND SIZE
     for i = 1:numFiles
         
-        
         % create a variable that will allow us to call each [subjFile] in
         % turn
-        loadFile = [subjFolder '/' dataFilesInfo(i).name];
-        thisFile = importdata(loadFile);
+        thisFile = importdata([subjFolder '/' dataFilesInfo(i).name]);
         data = thisFile.data;                 % Each file's data
-        totalTime = length(data);             % Length of tile
+        totalTime = length(data);             % Length of file
         trialLength = totalTime/15;           % 15 = sample rate
         
         % Cut the last 45s of each trial
-        if totalTime >= 675;data = data((totalTime-675:totalTime),:);   
+        if totalTime <= 675
+          
+        else
+            data = data((totalTime-675:totalTime),:);   
         end
-       
-      
-      
         
         %create a matrix to look at responses in each trial
-        totalTime = length(data);           % Length of tile
+        totalTime = length(data);           % Length of trial
         winMatrix = nan(totalTime,9);       % output matrix
         winMatrix(:, 1:2) = data(:,[3 1]);  % column1 = trial num; column2 = sample
         Nsheep = 5;                         % We had 5 sheep
@@ -111,42 +109,32 @@ while folder < numFolder+1
                 
                 % if the sheep is not in the circle for that frame then SheepIn = false
                 
-                sheepWinLog  = double(SheepD < circle);
-                winLog(sheep) = sheepWinLog;
+                winLog(sheep) = double(SheepD>circle);
             end
             
             winMatrix(frame,3:7) = winLog;
             
-            if sum(winLog) == 5
-                TotalSheepWinTime = TotalSheepWinTime+1;
-            else
-                TotalSheepWinTime;
-            end
+            if sum(winLog) == 5; TotalSheepWinTime = TotalSheepWinTime+1;end
             
-            winMatrix(frame,8) = TotalSheepWinTime;
-            
-            winMatrix(frame,9) = 100*(TotalSheepWinTime/676);
+            winMatrix(frame,8:9) = [TotalSheepWinTime 100*(TotalSheepWinTime/676)];
            
-            
+            dataFilesInfo(i).name
         end
         
-        ifWin = TotalSheepWinTime >= 470;
-        
+        ifWin = double(TotalSheepWinTime >= 470);
         
         practiceFiles = ([subjFolder '/' '*' 'practice.dat']);
         practiceFilesInfo = dir(practiceFiles);
         practice=length(practiceFilesInfo);
         
-        fileName = dataFilesInfo(i).name;
-        x = length(fileName);
         
-        if  fileName([x-5:x]) ==  'PB.dat'
+        fileName = dataFilesInfo(i).name;
+        if  fileName(end-5:end) ==  'PB.dat'
             ifWin = 0;
             winMatrix(totalTime,8) = 0;
             winMatrix(totalTime,9) = 0;
             PB=PB+1;
         elseif practice==0
-            
             i = numFiles;
         end
         
@@ -236,14 +224,19 @@ while folder < numFolder+1
         
         trial = trial+1;
         file = file+1;
+        
     end
     
     %% SAVE EACH GROUP AS AN EXCEL FILE
     % set headers for output data
-        
-    outputName = [outputFolder subjFolderName '.csv'];
-    writetable(subjOutput, outputName);
-    folder = folder+1;
+%         
+%     outputName = [outputFolder subjFolderName '.csv'];
+%     writetable(subjOutput, outputName);
+%     folder = folder+1;
     
+
+allData = [subjOutput;allData];
+(folder/numFolder)*100
+folder = folder+1;
 end
 
