@@ -67,7 +67,6 @@ for iFolder = 3:length(matrixFolderInfo)
     PB = 1; % number to cycle if PB trial
     
 %% LOAD FILE AND SET OUTPUT FILE VAUES AND SIZE
-    i=1;
     for i = 1:numFiles
         
         
@@ -173,7 +172,7 @@ for iFolder = 3:length(matrixFolderInfo)
         
         biosemi = {subjFolderName(1:2) subjFolderName(3:4)};
         
-        [subjSurveyDat] = fSurveyDat(biosemi,surveyData)
+        [subjSurveyDat] = fSurveyDat(biosemi,surveyData);
         
         % Output matrix column: GOUPNAME | GROUPNUM | TRIALNAME | TRIALNUM |
         % IFWIN | WINPERCENT | COCPERCENT

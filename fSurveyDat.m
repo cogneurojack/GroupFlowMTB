@@ -1,4 +1,4 @@
-function subjSurveyDat = fSurveyDat(surveyData,biosemi)
+function  [subjSurveyDat] = fSurveyDat(biosemi,surveyData)
 %% FUNCTION SET-UP
 % create output cellarray
 subjSurveyDat = cell(1,size(surveyData,2));
