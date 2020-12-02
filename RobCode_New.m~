@@ -19,10 +19,8 @@ circle = circle^2;
 
 Biosemi1Name = subjFolderName(1:2)
 Biosemi3Name = subjFolderName(3:4)
-find(Biosemi1Name,surveyData{:,2})
+find(Biosemi1Name,
 
-test=[]
- = surveyData{2:end,2}
 
 matrixFolder = '/Volumes/HYPERSCAN/groupFlow_S/';
 outputFolder = '/Volumes/HYPERSCAN/';
