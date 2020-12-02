@@ -10,3 +10,9 @@ for iSurvey = 2:length(surveyData)
         t=t+1;
     end
 end
+
+%% TESTIG NEW METHODS
+
+testData = readtable('/Users/jackmoore/Desktop/allSurveyClean.csv');
+
+ testData{14,1}
