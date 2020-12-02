@@ -16,12 +16,6 @@ circle = circle^2;
 %% LOAD EACH PAIRS FOLDER & SURVEY DATA
 
 [num, text, surveyData]= xlsread('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/Data/allSurveyClean.xlsx');
-
-Biosemi1Name = subjFolderName(1:2)
-Biosemi3Name = subjFolderName(3:4)
-find(Biosemi1Name,
-
-
 matrixFolder = '/Volumes/HYPERSCAN/groupFlow_S/';
 outputFolder = '/Volumes/HYPERSCAN/';
 infoMat=[];
@@ -172,9 +166,11 @@ for iFolder = 3:length(matrixFolderInfo)
         cd('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/GroupFlowMTB');
         [dog1_theta, dog2_theta] = cartesian2polar(dog1, dog2, polePos);
         [dog1Classification, dog2Classification]= ShepherdingClassification(dog1_theta, dog2_theta);
+       
         
-        SurveyData_fctn(
+        %% Survey function
         
+        biosemi = {subjFolderName(1:2) 0 subjFolderName(3:4)};
         
         
         % Output matrix column: GOUPNAME | GROUPNUM | TRIALNAME | TRIALNUM |
