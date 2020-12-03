@@ -10,7 +10,7 @@ trialName = trialName{2}(1:end-4);
 for iSrvy = 1:size(sData,1)
     
     % format survey data datestamp to be same as file data datestamp
-    sDate = datevec(sData{iSrvy,1},'DD/MM/YYYY');
+    sDate = datevec(sData{iSrvy,1});
     sDate = [num2str(sDate(3)) '/' num2str(sDate(2)) '/' num2str(sDate(1))];
     %% CHECK IF SAME AS TEST DATA
     if length(sData.Activity{iSrvy})== length(trialName)

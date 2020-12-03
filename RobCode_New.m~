@@ -48,6 +48,9 @@ for iFolder = 3:length(matrixFolderInfo)
     file = 1;
     trial = 1;
     
+    % create survey data table.
+    subjSData = sData(1,:);
+    
     
     % create a variable that will allow us to call each [subjFolder] in
     % turn
@@ -72,8 +75,8 @@ for iFolder = 3:length(matrixFolderInfo)
         
         % create a variable that will allow us to call each [subjFile] in
         % turn
-        loadFile = [subjFolder '/' dataFilesInfo(i).name];
-        fileName = dataFilesInfo(i).name
+        fileName = dataFilesInfo(i).name;
+        loadFile = [subjFolder '/' fileName];
         thisFile = importdata(loadFile);
         data = thisFile.data;                 % Each file's data
         totalTime = length(data);             % Length of tile
@@ -177,10 +180,8 @@ for iFolder = 3:length(matrixFolderInfo)
         
         %% Survey function
         
-        biosemi = {subjFolderName(1:2) subjFolderName(3:4)};
-       
-        
-        [subjSurveyDat] = fSurveyDat(biosemi,sData,fDate,trialNum);
+        [trialSData] = fSurveyDat(fileName,sData,fDate);
+        subjSData(i,:) = trialSData;
         
         % Output matrix column: GOUPNAME | GROUPNUM | TRIALNAME | TRIALNUM |
         % IFWIN | WINPERCENT | COCPERCENT

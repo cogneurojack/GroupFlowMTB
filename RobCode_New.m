@@ -51,6 +51,7 @@ for iFolder = 3:length(matrixFolderInfo)
     % create survey data table.
     subjSData = sData(1,:);
     
+    
     % create a variable that will allow us to call each [subjFolder] in
     % turn
     subjFolder = matrixFolderInfo(iFolder);
@@ -69,7 +70,7 @@ for iFolder = 3:length(matrixFolderInfo)
     PB = 1; % number to cycle if PB trial
     
 %% LOAD FILE AND SET OUTPUT FILE VAUES AND SIZE
-    for i = 1:numFiles
+    for i = 1:numFiles     
         
         
         % create a variable that will allow us to call each [subjFile] in
@@ -84,7 +85,7 @@ for iFolder = 3:length(matrixFolderInfo)
         
         fDate = dataFilesInfo(i).date;        % File date
         fDate = datenum(fDate);
-        fDate = datevec(fDate, 'DD/MM/YYYY');
+        fDate = datevec(fDate);
         fDate = [num2str(fDate(3)) '/' num2str(fDate(2)) '/' num2str(fDate(1))];
         
         % Cut the last 45s of each trial
