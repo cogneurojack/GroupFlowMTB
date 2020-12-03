@@ -15,7 +15,8 @@ circle = circle^2;
 
 %% LOAD EACH PAIRS FOLDER & SURVEY DATA
 
-[num, text, surveyData]= xlsread('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/Data/allSurveyClean.xlsx');
+% NEED TO CHANGE TO CSV [num, text, surveyData]= xlsread('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/Data/allSurveyClean.xlsx');
+sData = readtable('/Users/jackmoore/Desktop/allSurveyClean.csv');
 matrixFolder = '/Volumes/HYPERSCAN/groupFlow_S/';
 outputFolder = '/Volumes/HYPERSCAN/';
 infoMat=[];
@@ -60,7 +61,6 @@ for iFolder = 3:length(matrixFolderInfo)
     
     dataFiles = ([subjFolder '/' '*.dat']);
     dataFilesInfo = dir(dataFiles);
-    
     % work out total number of files we have for that pair and create an
     % output file with the length of the number of files
     numFiles = length(dataFilesInfo);
@@ -77,6 +77,11 @@ for iFolder = 3:length(matrixFolderInfo)
         data = thisFile.data;                 % Each file's data
         totalTime = length(data);             % Length of tile
         trialLength = totalTime/15;           % 15 = sample rate
+        trialNum = data(1,3);                 % trialNum
+        fDate = dataFilesInfo(i).date;        % File date
+        fDate = datenum(fDate);
+        fDate = datevec(fDate, 'DD/MM/YYYY');
+        fDate = [num2str(fDate(3)) '/' num2str(fDate(2)) '/' num2str(fDate(1))];
         
         % Cut the last 45s of each trial
         if totalTime >= 675;data = data((totalTime-675:totalTime),:);   
@@ -171,14 +176,13 @@ for iFolder = 3:length(matrixFolderInfo)
         %% Survey function
         
         biosemi = {subjFolderName(1:2) subjFolderName(3:4)};
+       
         
-        [subjSurveyDat] = fSurveyDat(biosemi,surveyData);
+        [subjSurveyDat] = fSurveyDat(biosemi,sData,fDate,trialNum);
         
         % Output matrix column: GOUPNAME | GROUPNUM | TRIALNAME | TRIALNUM |
         % IFWIN | WINPERCENT | COCPERCENT
         fileName = fileName(1:end-4);
-        
-        trialNum = data(1,3);
         sheepFrames = winMatrix(totalTime,8);
         sheepPercent = winMatrix(totalTime,9);
         
