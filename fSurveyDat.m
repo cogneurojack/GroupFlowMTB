@@ -20,7 +20,11 @@ for iSrvy = 1:size(sData,1)
                 && all(sData.Activity{iSrvy}==trialName)==true...             % same trial
                 && all(sDate == fDate)==true                            % same day
             trialSData = sData(iSrvy,:);
+            gotData = 1;
         end
     end
 end
+
+if gotData ~= 1; trialSData(1,:) = []; end
+
 end
