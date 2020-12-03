@@ -179,7 +179,7 @@ for iFolder = 3:length(matrixFolderInfo)
         
         %% Survey function
         
-        [trialSurveyDat] = fSurveyDat(fileName,sData,fDate);
+        [subjSData] = fSurveyDat(fileName,sData,fDate);
         
         % Output matrix column: GOUPNAME | GROUPNUM | TRIALNAME | TRIALNUM |
         % IFWIN | WINPERCENT | COCPERCENT
