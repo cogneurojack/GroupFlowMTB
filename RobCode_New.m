@@ -157,7 +157,7 @@ for iFolder = 3:length(matrixFolderInfo)
             winMatrix(totalTime,8) = 0;
             winMatrix(totalTime,9) = 0;
             PB=PB+1;
-        elseif practice==0
+        elseif (dataFilesInfo(i).name(6))=='p' || dataFilesInfo(i).name(6)=='t'
             i = numFiles;
         end
         
@@ -179,9 +179,10 @@ for iFolder = 3:length(matrixFolderInfo)
        
         
         %% Survey function
-        
+        if (dataFilesInfo(i).name(6))~='p'
         [trialSData] = fSurveyDat(fileName,sData,fDate);
         subjSData(i,:) = trialSData;
+        end
         
         % Output matrix column: GOUPNAME | GROUPNUM | TRIALNAME | TRIALNUM |
         % IFWIN | WINPERCENT | COCPERCENT
