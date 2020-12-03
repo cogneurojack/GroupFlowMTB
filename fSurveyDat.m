@@ -4,7 +4,8 @@ function  [trialSData] = fSurveyDat(fileName,sData,fDate)
 biosemi = {fileName(1:2) fileName(3:4)};
 trialName = regexp(fileName,'_','split');
 trialName = trialName{2}(1:end-4);
-
+trialSData= NaN(1,68);
+gotData=0;
 
 %% LOOP THROUGH SURVEY DATA FILE
 for iSrvy = 1:size(sData,1)
@@ -20,11 +21,11 @@ for iSrvy = 1:size(sData,1)
                 && all(sData.Activity{iSrvy}==trialName)==true...             % same trial
                 && all(sDate == fDate)==true                            % same day
             trialSData = sData(iSrvy,:);
-            gotData = 1;
+            gotData=1;
         end
     end
 end
 
-if gotData ~= 1; trialSData(1,:) = []; end
+if gotData == 0; trialSData = array2table(trialSData); end
 
 end
