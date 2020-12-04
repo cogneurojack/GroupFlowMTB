@@ -1,6 +1,8 @@
 %% BREAK UP AND RE-BUILD ROB CODE
 %% STARTING VALUES FOR SCRIPT
 
+clear all
+
 % Central pixel of the screen
 ScreenCenterX = 1050/2;
 ScreenCenterY = 1400/2;
@@ -47,7 +49,7 @@ for iFolder = 1:length(matrixFolderInfo)
     % related to system settings)
     file = 1;
     trial = 1;
-    
+    iFolder
     % create a variable that will allow us to call each [subjFolder] in
     % turn
     subjFolder = matrixFolderInfo(iFolder);
@@ -84,7 +86,7 @@ for iFolder = 1:length(matrixFolderInfo)
         fDate = [num2str(fDate(3)) '/' num2str(fDate(2)) '/' num2str(fDate(1))];
         
         % Cut the last 45s of each trial
-        if totalTime >= 675;data = data((totalTime-675:totalTime),:);   
+        if totalTime > 675;data = data((totalTime-675:totalTime),:);   
         end
        
       
@@ -174,7 +176,7 @@ for iFolder = 1:length(matrixFolderInfo)
        
         
         %% Survey function
-            if (dataFilesInfo(i).name)~='*practice*'||(dataFilesInfo(i).name)~='*test*'
+            if (dataFilesInfo(i).name(6))~='p'
                 [trialSData_1, trialSData_2] = fSurveyDat(fileName,sData,fDate);
                 subj1_SData(i,:) = trialSData_1;
                 subj2_SData(i,:) = trialSData_2;

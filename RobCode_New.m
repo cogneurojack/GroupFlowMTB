@@ -86,7 +86,7 @@ for iFolder = 1:length(matrixFolderInfo)
         fDate = [num2str(fDate(3)) '/' num2str(fDate(2)) '/' num2str(fDate(1))];
         
         % Cut the last 45s of each trial
-        if totalTime >= 675;data = data((totalTime-675:totalTime),:);   
+        if totalTime > 675;data = data((totalTime-675:totalTime),:);   
         end
        
       
@@ -248,7 +248,8 @@ if file == 1
  dataMatrix(iFolder).performanceData = subjOutput;
  dataMatrix(iFolder).subj1Data = subj1_SData;
  dataMatrix(iFolder).subj2Data = subj2_SData;
-
+ subj1_SData = sData(1,:);
+ subj2_SData = sData(1,:);
         
         trial = trial+1;
         file = file+1;
