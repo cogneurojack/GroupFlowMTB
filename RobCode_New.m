@@ -1,6 +1,8 @@
 %% BREAK UP AND RE-BUILD ROB CODE
 %% STARTING VALUES FOR SCRIPT
 
+clear all
+
 % Central pixel of the screen
 ScreenCenterX = 1050/2;
 ScreenCenterY = 1400/2;
@@ -47,7 +49,7 @@ for iFolder = 1:length(matrixFolderInfo)
     % related to system settings)
     file = 1;
     trial = 1;
-    
+    iFolder
     % create a variable that will allow us to call each [subjFolder] in
     % turn
     subjFolder = matrixFolderInfo(iFolder);
@@ -174,7 +176,7 @@ for iFolder = 1:length(matrixFolderInfo)
        
         
         %% Survey function
-            if (dataFilesInfo(i).name(6))~='p'||(dataFilesInfo(i).name(6))~='t'
+            if (dataFilesInfo(i).name(6))~='p'
                 [trialSData_1, trialSData_2] = fSurveyDat(fileName,sData,fDate);
                 subj1_SData(i,:) = trialSData_1;
                 subj2_SData(i,:) = trialSData_2;
