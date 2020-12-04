@@ -244,9 +244,9 @@ if file == 1
         end
         
         
- dataMatrix(iFolder).performanceData = subjOutput;
- dataMatrix(iFolder).subj1Data = subj1_SData;
- dataMatrix(iFolder).subj2Data = subj2_SData;
+ dataMatrix.performanceData = subjOutput;
+ dataMatrix.subj1Data = subj1_SData;
+ dataMatrix.subj2Data = subj2_SData;
 
 
         
@@ -259,7 +259,7 @@ if file == 1
 %         
 %     outputName = [outputFolder subjFolderName '.csv'];
 %     writetable(subjOutput, outputName);
-%     folder = folder+1;
+% %     folder = folder+1;
 %     infoMatName = [outputFolder 'InfoMatrix.csv'];
 %     infoMat = [infoMat;subjOutput];
 %     writetable(infoMat, infoMatName);

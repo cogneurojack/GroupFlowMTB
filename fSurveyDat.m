@@ -1,4 +1,4 @@
-function  [trialSData] = fSurveyDat(fileName,sData,fDate)
+function  [trialSData_1, trialSData_2] = fSurveyDat(fileName,sData,fDate)
 %% FUNCTION SET-UP
 % create output cellarray
 biosemi = {fileName(1:2) fileName(3:4)};
@@ -17,7 +17,11 @@ for iSrvy = 1:size(sData,1)
         if all(biosemi{1} ==  sData.ParticipantName{iSrvy}(1:2)) == true...  % same subjID
                 && all(sData.Activity{iSrvy}==trialName)==true...             % same trial
                 && all(sDate == fDate)==true                            % same day
-            trialSData = sData(iSrvy,:);
+            trialSData_1 = sData(iSrvy,:);
+        elseif all(biosemi{2} ==  sData.ParticipantName{iSrvy}(1:2)) == true...  % same subjID
+                && all(sData.Activity{iSrvy}==trialName)==true...             % same trial
+                && all(sDate == fDate)==true                            % same day
+            trialSData_2 = sData(iSrvy,:);
         end
     end
 end
