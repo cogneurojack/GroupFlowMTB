@@ -67,8 +67,8 @@ for iFolder = 1:length(matrixFolderInfo)
     
 %% LOAD FILE AND SET OUTPUT FILE VAUES AND SIZE
     for i = 1:numFiles     
-        
-        
+        subj1_SData = array2table(NaN(numFiles,68));
+        subj2_SData = array2table(NaN(numFiles,68));
         % create a variable that will allow us to call each [subjFile] in
         % turn
         fileName = dataFilesInfo(i).name;
