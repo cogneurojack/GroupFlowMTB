@@ -4,6 +4,7 @@ function  [trialSData_1, trialSData_2] = fSurveyDat(fileName,sData,fDate)
 biosemi = {fileName(1:2) fileName(3:4)};
 trialName = regexp(fileName,'_','split');
 trialName = trialName{2}(1:end-4);
+gotD = [0 0];
 %% LOOP THROUGH SURVEY DATA FILE
 for iSrvy = 1:size(sData,1)
     
@@ -18,11 +19,15 @@ for iSrvy = 1:size(sData,1)
                 && all(sData.Activity{iSrvy}==trialName)==true...             % same trial
                 && all(sDate == fDate)==true                            % same day
             trialSData_1 = sData(iSrvy,:);
+            gotD(1)=1;
         elseif all(biosemi{2} ==  sData.ParticipantName{iSrvy}(1:2)) == true...  % same subjID
                 && all(sData.Activity{iSrvy}==trialName)==true...             % same trial
                 && all(sDate == fDate)==true                            % same day
             trialSData_2 = sData(iSrvy,:);
+            gotD(2)=1;
         end
     end
 end
+if gotD(1)==0, trialSData_1 = sData(1,:); end
+if gotD(2)==0, trialSData_2 = sData(1,:); end
 end

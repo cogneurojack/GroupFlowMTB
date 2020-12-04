@@ -16,7 +16,7 @@ circle = circle^2;
 %% LOAD EACH PAIRS FOLDER & SURVEY DATA
 
 % NEED TO CHANGE TO CSV [num, text, surveyData]= xlsread('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/Data/allSurveyClean.xlsx');
-sData = readtable('/Users/jackmoore/Desktop/allSurveyClean.csv');
+sData = readtable('/Volumes/HYPERSCAN/groupFlow_B/allSurveyClean.csv');
 matrixFolder = '/Volumes/HYPERSCAN/groupFlow_S/';
 outputFolder = '/Volumes/HYPERSCAN/';
 infoMat=[];
@@ -67,8 +67,7 @@ for iFolder = 1:length(matrixFolderInfo)
     
 %% LOAD FILE AND SET OUTPUT FILE VAUES AND SIZE
     for i = 1:numFiles     
-        subj1_SData = array2table(NaN(numFiles,68));
-        subj2_SData = array2table(NaN(numFiles,68));
+        
         % create a variable that will allow us to call each [subjFile] in
         % turn
         fileName = dataFilesInfo(i).name;
@@ -175,7 +174,7 @@ for iFolder = 1:length(matrixFolderInfo)
        
         
         %% Survey function
-            if (dataFilesInfo(i).name(6))~='p'
+            if (dataFilesInfo(i).name(6))~='p'||(dataFilesInfo(i).name(6))~='t'
                 [trialSData_1, trialSData_2] = fSurveyDat(fileName,sData,fDate);
                 subj1_SData(i,:) = trialSData_1;
                 subj2_SData(i,:) = trialSData_2;
@@ -247,7 +246,6 @@ if file == 1
  dataMatrix(iFolder).performanceData = subjOutput;
  dataMatrix(iFolder).subj1Data = subj1_SData;
  dataMatrix(iFolder).subj2Data = subj2_SData;
-
 
         
         trial = trial+1;
