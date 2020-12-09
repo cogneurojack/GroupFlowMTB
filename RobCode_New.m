@@ -200,9 +200,7 @@ for iFolder = 1:length(matrixFolderInfo)
         % 9 = dog2Classification
         trialOutput = table({0},{subjFolderName}, {fileName}, ...
             {trialNum}, {trialLength}, {ifWin}, {sheepFrames},...
-            {sheepPercent}, {dog1Classification}, {dog2Classification},...
-            {0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},...
-            {0},{0},{0},{0},{0},{0},{0},{0},{0},{0});
+            {sheepPercent}, {dog1Classification}, {dog2Classification});
         trialOutput.Properties.VariableNames{'Var1'} = 'TimeStamp';
         trialOutput.Properties.VariableNames{'Var2'} = 'DyadName';
         trialOutput.Properties.VariableNames{'Var3'} = 'fileName';
@@ -248,13 +246,13 @@ if file == 1
  dataMatrix(iFolder).performanceData = subjOutput;
  dataMatrix(iFolder).subj1Data = subj1_SData;
  dataMatrix(iFolder).subj2Data = subj2_SData;
- subj1_SData = sData(1,:);
- subj2_SData = sData(1,:);
         
         trial = trial+1;
         file = file+1;
     end
     
+ subj1_SData = sData(1,:);
+ subj2_SData = sData(1,:);
     %% SAVE EACH GROUP AS AN EXCEL FILE
 %     % set headers for output data
 %         
