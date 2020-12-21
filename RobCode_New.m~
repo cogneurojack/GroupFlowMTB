@@ -248,8 +248,7 @@ if file == 1
  dataMatrix(iFolder).performanceData = subjOutput;
  dataMatrix(iFolder).subj1Data = subj1_SData;
  dataMatrix(iFolder).subj2Data = subj2_SData;
- subj1_SData = sData(1,:);
- subj2_SData = sData(1,:);
+
         
         trial = trial+1;
         file = file+1;
