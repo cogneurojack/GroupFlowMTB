@@ -14,6 +14,8 @@
 %7) copy and past the triggers from subject A into subject B
 %8) cut-out each trial (+&- 1s)
 %9) Save both data sets as  filt_ica_trim.
+clear all
+close all
 
 eeglab
  for i = 5:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
@@ -42,7 +44,7 @@ eeglab
              else
                 Bx(i).name
                 p3x(j).name
-                checkFile = input('Press 1 if correct filD: '); %INPUT%
+                checkFile = input('Press 1 if correct file ID: '); %INPUT%
                 if checkFile
                     data = p3x(j).name;
                     j = length(p3x);
@@ -71,7 +73,7 @@ eeglab
     
     
     [{EEG.event(1:10).type}' {EEG.event(1:10).latency}']
-    trigNum = input('Check start trigger num as it appears this can changD: '); %INPUT%
+    trigNum = input('Check start trigger num as it appears this can change: '); %INPUT%
     
     [trlInf] = dataInfo(trlInf, EEG, grpInf, trigNum)
     %% SAVE AS NEW FILE FOR TRIMMED EEG DATA
