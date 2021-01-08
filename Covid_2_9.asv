@@ -1,6 +1,7 @@
 %% GROUP FLOW - VIRTUAL SHEPHERDING
 %% DATA SEGMENTING AND EVENT CLEANING
 % Jack D Moore - contact: j.d.moore@gold.ac.uk
+% load the behavioural data
 
 % Script will cylce go through each participant pair,
 %1) locate correct triggers indicating beginning and end of each trial in subjact A
@@ -17,7 +18,7 @@ clear all
 close all
 
 eeglab
- for i = 6:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
+ for i = 5:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
     %% LOAD GAME DATA
     cd('D:\groupFlow_trialDat\')
     Bx = dir('D:\groupFlow_trialDat\*.xls');
@@ -223,7 +224,8 @@ eeglab
     EEG = pop_loadset('filename',data,'filepath','D:\\groupFlow_1\\ICA\\');
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0);
   %% REMOVE START OF TRIAL TRGGER
-if EEG.event(1).latency <=2, EEG.event(1)=[]; end
+  
+  EEG.event(1)=[];
     
     %% ADD INFO TO TABLE 
   
