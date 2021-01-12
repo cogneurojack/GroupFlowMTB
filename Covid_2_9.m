@@ -15,10 +15,10 @@
 %9) Save both data sets as  filt_ica_trim.
 clear all
 close all
-
+format shortG % This sets the format of values toprevent use of paower function (so I can see actual values)
 eeglab nogui
 i=1;
- for i =[1 6:length('D:\groupFlow_trialDat\')] % first 4 pairs need to be checked by hand
+ for i =[1 4:length('D:\groupFlow_trialDat\')] % first 4 pairs need to be checked by hand
     %% LOAD GAME DATA
     cd('D:\groupFlow_trialDat\')
     Bx = dir('D:\groupFlow_trialDat\*.xls');
@@ -60,7 +60,7 @@ i=1;
     EEG = pop_loadset('filename',data,'filepath','D:\\groupFlow_3\\ICA\\');
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0);
     EEG = eeg_checkset( EEG );
-    % eeglab nogui redraw
+    % eeglab redraw
     %% 1) CREATE SPREADSHEET COMPARING IT TO STIMULUS DATA
     % Create new table that will have both the behave and EEG data in it
     trlInf = zeros(length(EEG.event),8);
@@ -74,29 +74,29 @@ i=1;
     trlInf(1:length(stimTrialNum),2:3) = [stimTrialNum stimTrialLngth];
     
     
-    [{EEG.event(1:10).type}']
+    [[EEG.event(1:length(EEG.event)).type]; [EEG.event(1:length(EEG.event)).latency]/512]'
     trigNum = input('Check start trigger num as it appears this can change: '); %INPUT%
     
-    [trlInf] = dataInfo(trlInf, EEG, grpInf, trigNum)
+    [trlInf] = dataInfo(trlInf, EEG, grpInf, trigNum);
     %% SAVE AS NEW FILE FOR TRIMMED EEG DATA
     filename = strcat(EEG.filename(1:end-4), '_trim');
     filepath = strcat(EEG.filepath(1:end-5), '\\Trim\\');
     EEG = pop_saveset( EEG, 'filename',filename,'filepath',filepath);
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
-    eeglab redraw
     EEG = eeg_checkset( EEG );
     
     %% remove the first event as just trial start event
     EEG.event(1)=[];
     
     %% 2) ADD IN END-POINT EVENTS FOR PB TRIALS
-    [{EEG.event.type}' {EEG.event.latency}']
+    [[EEG.event.type]; [EEG.event.latency]/512]'
     endTrig = input('What is the end-point trigger number: '); %INPUT%
-    idx = cell2mat({EEG.event(:).type}) == endTrig;
     
-    for l = 1:length(idx)
-        if ~idx(l)
-            if EEG.event(l+1).type ~= endTrig
+    idx = cell2mat({EEG.event(:).type}) == endTrig; %logical if end-point trigger
+    
+    for l = 1:length(idx)% for all events
+        if ~idx(l) % if the current event is not end-point trigger
+            if EEG.event(l+1).type ~= endTrig % and the next event is not end-point trigger
                 n_events=length(EEG.event);
                 EEG.event(n_events+1).type = endTrig;
                 EEG.event(n_events+1).latency =((EEG.event(l).latency + ...
