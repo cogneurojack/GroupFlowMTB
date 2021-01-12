@@ -17,7 +17,7 @@ clear all
 close all
 
 eeglab
- for i = 6:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
+ for i =[1 4:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
     %% LOAD GAME DATA
     cd('D:\groupFlow_trialDat\')
     Bx = dir('D:\groupFlow_trialDat\*.xls');
@@ -73,7 +73,7 @@ eeglab
     trlInf(1:length(stimTrialNum),2:3) = [stimTrialNum stimTrialLngth];
     
     
-    [{EEG.event(1:10).type}' {EEG.event(1:10).latency}']
+    [{EEG.event(1:10).type}']
     trigNum = input('Check start trigger num as it appears this can change: '); %INPUT%
     
     [trlInf] = dataInfo(trlInf, EEG, grpInf, trigNum)
@@ -86,7 +86,7 @@ eeglab
     EEG = eeg_checkset( EEG );
     
     %% remove the first event as just trial start event
-    % EEG.event(1) = [];
+    EEG.event(1)=[];
     
     %% 2) ADD IN END-POINT EVENTS FOR PB TRIALS
     [{EEG.event.type}' {EEG.event.latency}']
@@ -223,7 +223,7 @@ eeglab
     EEG = pop_loadset('filename',data,'filepath','D:\\groupFlow_1\\ICA\\');
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0);
   %% REMOVE START OF TRIAL TRGGER
-if EEG.event(1).latency <=2, EEG.event(1)=[]; end
+EEG.event(1)=[]
     
     %% ADD INFO TO TABLE 
   
@@ -247,22 +247,19 @@ if EEG.event(1).latency <=2, EEG.event(1)=[]; end
     EEG = eeg_checkset( EEG );
     %% CUT BOTH DATA SETS TO -1 BEFORE FIRST TRIAL
     
-   removeStart = [-EEG.event(1).latency/512 -1];
-EEG = pop_editeventvals(EEG,'changefield',{1 'type' 1});
+    removeStart = [-EEG.event(1).latency/512 -1];
+    EEG = pop_editeventvals(EEG,'changefield',{1 'type' 1});
 
     EEG = pop_rmdat( EEG, '1', removeStart ,0);
     EEG.event=[];
-    
-    [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
-    EEG = eeg_checkset( EEG );
-    
+     
     % change from current data-est to other participants dataset
     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,'retrieve',2,'study',0);
 
 
    removeStart = [-EEG.event(1).latency/512 -1];
     
-    EEG = pop_rmdat( EEG, EEG.event(1).type, removeStart ,0);
+   EEG = pop_rmdat( EEG, EEG.event(1).type, removeStart ,0);
 
   
   
