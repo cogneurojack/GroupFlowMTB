@@ -16,8 +16,9 @@
 clear all
 close all
 
-eeglab
- for i =[1 4:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
+eeglab nogui
+i=1;
+ for i =[1 6:length('D:\groupFlow_trialDat\')] % first 4 pairs need to be checked by hand
     %% LOAD GAME DATA
     cd('D:\groupFlow_trialDat\')
     Bx = dir('D:\groupFlow_trialDat\*.xls');
@@ -59,7 +60,7 @@ eeglab
     EEG = pop_loadset('filename',data,'filepath','D:\\groupFlow_3\\ICA\\');
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0);
     EEG = eeg_checkset( EEG );
-    eeglab redraw
+    % eeglab nogui redraw
     %% 1) CREATE SPREADSHEET COMPARING IT TO STIMULUS DATA
     % Create new table that will have both the behave and EEG data in it
     trlInf = zeros(length(EEG.event),8);

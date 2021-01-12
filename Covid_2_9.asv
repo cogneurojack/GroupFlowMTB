@@ -17,7 +17,7 @@ clear all
 close all
 
 eeglab
- for i = 6:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
+ for i =[: 6:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
     %% LOAD GAME DATA
     cd('D:\groupFlow_trialDat\')
     Bx = dir('D:\groupFlow_trialDat\*.xls');
