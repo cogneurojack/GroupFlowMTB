@@ -136,31 +136,34 @@ i=1;
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
     %% RENAME THE EVENTS
     
+    
     if length(EEG.event) ~= size((grpInf),1)*2
         {EEG.event.type}'
         'incorrect number of trials. Check all triggers are correct';
         pause
     else
         pause('off')
-        trl = 1;
-        for l = 1:length(EEG.event)
-            if EEG.event(l).type == endTrig
-                EEG = pop_editeventvals(EEG,'changefield',{l 'type' '999'});
-            else
-                % Name = Trial Number | Trial Type ((PB/~PB) | Outcome
-                % (Win/Lose)
-                name = [table2array(grpInf(trl,3)) trlInf(trl,1) table2array(grpInf(trl,5))];
-                if trlInf(trl,1) == 99
-                    name(3) = trlInf(trl-1,5);
-                end
-%                              name = [num2str(name(1)) num2str(name(2)) num2str(name(3))...
-%                                  num2str(name(4)) num2str(name(5)) num2str(name(6))];
-%                              name = str2num(name);
-                EEG = pop_editeventvals(EEG,'changefield',{l 'type' name});
-                trl=trl+1;
+    end
+    
+    for l = 1:length(EEG.event/)2
+        EEG.event(l).type = [trlInf(l,2) trlInf(l,1) table2array(grpInf(trl,5)]
+        
+        if EEG.event(l).type == endTrig
+            EEG = pop_editeventvals(EEG,'changefield',{l 'type' '999'});
+        else
+            % Name = Trial Number | Trial Type ((PB/~PB) | Outcome
+            % (Win/Lose)
+            name = [table2array(grpInf(trl,3)) trlInf(trl,1) table2array(grpInf(trl,5))];
+            if trlInf(trl,1) == 99
+                name(3) = trlInf(trl-1,5);
             end
-            
+            %                              name = [num2str(name(1)) num2str(name(2)) num2str(name(3))...
+            %                                  num2str(name(4)) num2str(name(5)) num2str(name(6))];
+            %                              name = str2num(name);
+            EEG = pop_editeventvals(EEG,'changefield',{l 'type' name});
+            trl=trl+1;
         end
+        
     end
    %% ADD -45S TRIGGER
    % Get the latencies (data point indices) for all '999' type events...
