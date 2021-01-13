@@ -135,8 +135,6 @@ i=1;
     EEG = pop_saveset( EEG, 'savemode','resave');
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
     %% RENAME THE EVENTS
-    
-    
     if length(EEG.event) ~= size((grpInf),1)*2
         {EEG.event.type}'
         'incorrect number of trials. Check all triggers are correct'
@@ -146,22 +144,23 @@ i=1;
     end
     trl=1;
     for l = 1:2:length(EEG.event)
-        EEG.event(l).type = [trlInf(trl,2) trlInf(trl,1) table2array(grpInf(trl,5))];
+        EEG.event(l).type = num2str([trlInf(trl,2) trlInf(trl,1) table2array(grpInf(trl,5))]);
         trl=trl+1;
     end
    %% ADD -45S TRIGGER
    % Get the latencies (data point indices) for all '999' type events...
-   endLatencies = [EEG.event(find(strcmp(999,{EEG.event.type}))).latency];
+   for i = 1:size(EEG.event,2),EEG.event(i).type=num2str(EEG.event(i).type);end
+   endLatencies = [EEG.event(find(strcmp('999',{EEG.event.type}))).latency];
 %    
 %     EEG = eeg_checkset( EEG );
 %     EEG = pop_saveset( EEG, 'savemode','resave');
 %     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
-   % for each end_latencies add a new event type '45s' with a latency of
+   % for each end_latencies add a new event type '45' 45s from the end
    
-   for l=1:length(endLatencies);
+   for l=1:length(endLatencies)
        n_events=length(EEG.event);
-       EEG.event(n_events+1).type='45s';
-       EEG.event(n_events+1).latency=(endLatencies(l)-45*EEG.srate)-1;
+       EEG.event(n_events+1).type='45';
+       EEG.event(n_events+1).latency=(endLatencies(l)-(45*EEG.srate));
        EEG.event(n_events+1).urevent=n_events+1;
    end
    % check for consistency and reorder the events chronologically...
@@ -174,7 +173,7 @@ i=1;
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
     
   %%  PUT DATA-SET INFO INTO TABLE FOR COMPARISON
-  % put the relevant EEG data in the relevant coumns
+  % put the relevant EEG data in the relevant columns
   for j = 1:length(EEG.event)-1
       prevCheck(j,1) = EEG.event(j).urevent;
       prevCheck(j,2) = (EEG.event(j).type(1));
