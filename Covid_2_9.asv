@@ -59,7 +59,7 @@ i=1;
         end
     end
     
-    subjFolder([foldername '/' data(1:2)]);
+    subjFolder = ([foldername '/' data(6:7)]);
     mkdir(subjFolder);
     
     EEG = pop_loadset('filename',data,'filepath','D:\\groupFlow_3\\ICA\\');
@@ -94,6 +94,7 @@ i=1;
     %% remove the first event as just trial start event
     EEG.event(1)=[];
     
+    EEG = eeg_checkset( EEG );
     %% REMOVE ANY UNUSED TRIALS
     % In case there are trials which are void
     cd('C:\Users\Jack Moore\OneDrive - Goldsmiths College\Projects\Group Flow\GroupFlowMTB');
@@ -137,10 +138,6 @@ i=1;
     
 
     %% SAVE THE DATA-SET WITH ONLY CORRECT EVENTS
-    EEG = eeg_checkset( EEG );
-    EEG = pop_saveset( EEG, 'savemode','resave');
-    [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
-    %% RENAME THE EVENTS
     if length(EEG.event) ~= size((grpInf),1)*2
         {EEG.event.type}'
         'incorrect number of trials. Check all triggers are correct'
@@ -148,10 +145,19 @@ i=1;
     else
         pause('off')
     end
+    
+    EEG = eeg_checkset( EEG );
+    EEG = pop_saveset( EEG, 'savemode','resave');
+    [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
+    %% RENAME THE START EVENTS
+
+    idx = ismember([EEG.event.type],endTrig);
     trl=1;
-    for l = 1:2:length(EEG.event)
+    for l = 1:length(EEG.event)
+        if idx(l)==0
         EEG.event(l).type = num2str([trlInf(trl,2) trlInf(trl,1) table2array(grpInf(trl,5))]);
         trl=trl+1;
+        end
     end
    %% ADD -45S TRIGGER
    % Get the latencies (data point indices) for all '999' type events...
@@ -173,25 +179,36 @@ i=1;
    EEG=eeg_checkset(EEG,'eventconsistency');
    
    
+    EEG = eeg_checkset( EEG );
+    EEG = pop_saveset( EEG, 'savemode','resave');
+    [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
 %%  CUT OUT EACH TRIAL
+tNum=0;
+for epoch = 1:3:length(ALLEEG(2).event)
+    epoch_trial = [(ALLEEG(2).event(epoch+2).latency-ALLEEG(2).event(epoch).latency)/512+1]; % get the time of the trial
+    
+    ALLEEG(2) = pop_rmdat( EEG, {EEG.event(epoch).type}, [-1 epoch_trial],0 ); %cut our trials
+    
+    tNum = tNum +1; % trail number
+    filename_trial = [subjFolder '/' ALLEEG(2).filename '_t' num2str(tNum)]; % filename
+    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,'savenew', filename_trial,'gui','off'); %save trial
+    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,'retrieve',2,'study',0);
+    ALLEEG(3)=[];
 
-for epoch = 1:3:length(EEG.event)
-    EEG = eeg_checkset( EEG ); % check the current data-set
-    epoch_trial = [(EEG.event(epoch+2).latency-EEG.event(epoch).latency)/512+1]; % get the time of the trial
-    
-    EEG = pop_rmdat( EEG, EEG.event(epoch).type, [-1 epoch_trial+1] );
-    
-    % filename
-    tNum = tNum +1
-    [subjfolder EEG.filename '_t'  
+
+%     EEG = pop_epoch( EEG, {  '1  0  0'  }, [-1  118], 'newname', 'test', 'epochinfo', 'yes');
+%     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'savenew','D:\\SSMZ\\01\\test.set','gui','off');
+%     EEG = eeg_checkset( EEG );
+%     EEG = pop_rmdat( EEG, {EEG.event(epoch).type}, [-1 epoch_trial],0 );
+%     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'savenew', filename_trial,'gui','off');
         
-    
-    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'savenew', subjFolder \\1_3_MZ_filt_ica_trim_t1.set','gui','off');
 end
 %% SAVE THE FINALISED DATA-SET 
     EEG = eeg_checkset( EEG );
     EEG = pop_saveset( EEG, 'savemode','resave');
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
+    
+    ALLEEG =[];
     
   %%  PUT DATA-SET INFO INTO TABLE FOR COMPARISON
   % put the relevant EEG data in the relevant columns
