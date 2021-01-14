@@ -25,6 +25,8 @@ i=1;
     
     % Sort data
     grpInf = readtable(Bx(i).name);
+    foldername = ['D:/' (Bx(i).name(4:7))];
+    mkdir(foldername);
     % remove practic'e' trials
     idx = cell2mat(cellfun(@(x) contains(x,'e'), table2cell(grpInf(:,2)),'UniformOutput', false));
     grpInf(idx,:) = [];
@@ -56,6 +58,9 @@ i=1;
         else
         end
     end
+    
+    subjFolder([foldername '/' data(1:2)]);
+    mkdir(subjFolder);
     
     EEG = pop_loadset('filename',data,'filepath','D:\\groupFlow_3\\ICA\\');
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0);
@@ -89,6 +94,21 @@ i=1;
     %% remove the first event as just trial start event
     EEG.event(1)=[];
     
+    %% REMOVE ANY UNUSED TRIALS
+    % In case there are trials which are void
+    cd('C:\Users\Jack Moore\OneDrive - Goldsmiths College\Projects\Group Flow\GroupFlowMTB');
+    [trlInf] = dataInfo(trlInf, EEG, grpInf, trigNum) ;
+    array2table(trlInf(:,4:end),'VariableNames',...
+        {'trlLength',...
+        'ON_urevent',...
+        'ON_type',...
+        'OFF_urevent',...
+        'OFF_type'})
+    void = input( 'Input the urevent number of any events that will not be used, such as unused trials: '); %INPUT%
+    
+    idx = cell2mat(cellfun(@(x) ismember(x,void), {EEG.event.urevent},'UniformOutput', false));
+    EEG.event(idx) = [];
+    
     %% 2) ADD IN END-POINT EVENTS FOR PB TRIALS
     [[EEG.event.type]; [EEG.event.latency]/512]'
     endTrig = input('What is the end-point trigger number: '); %INPUT%
@@ -115,21 +135,7 @@ i=1;
                 table2array(grpInf(end,4))*512);
     EEG.event(n_events+2).urevent = n_events+1;
     
-    %% REMOVE ANY UNUSED TRIALS
-    % In case there are trials which are void
-    cd('C:\Users\Jack Moore\OneDrive - Goldsmiths College\Projects\Group Flow\GroupFlowMTB');
-    [trlInf] = dataInfo(trlInf, EEG, grpInf, trigNum) ;
-    array2table(trlInf(:,4:end),'VariableNames',...
-        {'trlLength',...
-        'ON_urevent',...
-        'ON_type',...
-        'OFF_urevent',...
-        'OFF_type'})
-    void = input( 'Input the urevent number of any events that will not be used, such as unused trials: '); %INPUT%
-    
-    idx = cell2mat(cellfun(@(x) ismember(x,void), {EEG.event.urevent},'UniformOutput', false));
-    EEG.event(idx) = [];
-    
+
     %% SAVE THE DATA-SET WITH ONLY CORRECT EVENTS
     EEG = eeg_checkset( EEG );
     EEG = pop_saveset( EEG, 'savemode','resave');
@@ -167,7 +173,22 @@ i=1;
    EEG=eeg_checkset(EEG,'eventconsistency');
    
    
-    %% SAVE THE FINALISED DATA-SET 
+%%  CUT OUT EACH TRIAL
+
+for epoch = 1:3:length(EEG.event)
+    EEG = eeg_checkset( EEG ); % check the current data-set
+    epoch_trial = [(EEG.event(epoch+2).latency-EEG.event(epoch).latency)/512+1]; % get the time of the trial
+    
+    EEG = pop_rmdat( EEG, EEG.event(epoch).type, [-1 epoch_trial+1] );
+    
+    % filename
+    tNum = tNum +1
+    [subjfolder EEG.filename '_t'  
+        
+    
+    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'savenew', subjFolder \\1_3_MZ_filt_ica_trim_t1.set','gui','off');
+end
+%% SAVE THE FINALISED DATA-SET 
     EEG = eeg_checkset( EEG );
     EEG = pop_saveset( EEG, 'savemode','resave');
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
@@ -185,7 +206,8 @@ i=1;
   prevCheck(:,4)= prevCheck(:,4) - prevCheck(1,4) ;
   
   %% LOAD OTHER DATA-SET
-    %% LOAD FIRST SUBJECT EEG DATA
+    %% LOAD SECOND SUBJECT EEG DATA    
+    %%!!!!!!!!!!!!!!!!!! NEED TO CHANGE DIRECTORIES!!!q!
     % Load the correct directory
     cd('D:\groupFlow_3\ICA\');
     p3x = dir('D:\groupFlow_3\ICA\*.set');
@@ -215,8 +237,7 @@ i=1;
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0);
     EEG = eeg_checkset( EEG );
     % eeglab redraw
-    %% REPLICATING FOR THE SECOND SUBJECT 
-    %%!!!!!!!!!!!!!!!!!!
+
     %% 2.1) CREATE SPREADSHEET COMPARING IT TO STIMULUS DATA
     % Create new table that will have both the behave and EEG data in it
     trlInf = zeros(length(EEG.event),8);
