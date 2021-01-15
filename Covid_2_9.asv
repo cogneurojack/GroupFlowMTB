@@ -191,22 +191,13 @@ for epoch = 1:3:length(EEG.event)
     
     dir_trl = [subjFolder '\\'];
     filename_trl = [EEG.filename(1:end-4) '_t' num2str(tNum) '.set'];
-    
-    pop_rmdat( EEG, {EEG.event(epoch).type}, [-1 epoch_trial],0 ); %cut our trials
-    %[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,'savenew', filename_trial,'gui','off'); %save trial
-     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'setname',filename_trl,'savenew',[dir_trl filename_trl],'gui','off'); 
-   
-    %[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'setname','test_MZ_t1','savenew','D:\\SSMZ\\MZ\\test_MZ_t1.set','gui','off'); 
-    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,'retrieve',2,'study',0);
+    EEG = eeg_checkset( EEG );
+    EEG = pop_rmdat( EEG, {EEG.event(epoch).type}, [-1 epoch_trial],0 ); %cut our trials
+    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'savenew',[dir_trl filename_trl],'gui','off'); %save trial
+    EEG = eeg_checkset( EEG );
     ALLEEG(3)=[];
-
-
-%     EEG = pop_epoch( EEG, {  '1  0  0'  }, [-1  118], 'newname', 'test', 'epochinfo', 'yes');
-%     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'savenew','D:\\SSMZ\\01\\test.set','gui','off');
-%     EEG = eeg_checkset( EEG );
-%     EEG = pop_rmdat( EEG, {EEG.event(epoch).type}, [-1 epoch_trial],0 );
-%     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'savenew', filename_trial,'gui','off');
-        
+    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,'retrieve',2,'study',0);
+    
 end
 %% SAVE THE FINALISED DATA-SET 
     EEG = eeg_checkset( EEG );
