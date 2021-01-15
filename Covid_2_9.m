@@ -25,7 +25,7 @@ i=1;
     
     % Sort data
     grpInf = readtable(Bx(i).name);
-    foldername = ['D:/' (Bx(i).name(4:7))];
+    foldername = ['D:\\' (Bx(i).name(4:7))];
     mkdir(foldername);
     % remove practic'e' trials
     idx = cell2mat(cellfun(@(x) contains(x,'e'), table2cell(grpInf(:,2)),'UniformOutput', false));
@@ -59,7 +59,7 @@ i=1;
         end
     end
     
-    subjFolder = ([foldername '/' data(6:7)]);
+    subjFolder = ([foldername '\\' data(6:7)]);
     mkdir(subjFolder);
     
     EEG = pop_loadset('filename',data,'filepath','D:\\groupFlow_3\\ICA\\');
@@ -184,14 +184,30 @@ i=1;
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
 %%  CUT OUT EACH TRIAL
 tNum=0;
-for epoch = 1:3:length(ALLEEG(2).event)
-    epoch_trial = [(ALLEEG(2).event(epoch+2).latency-ALLEEG(2).event(epoch).latency)/512+1]; % get the time of the trial
+for epoch = 1:3:length(EEG.event)
+    epoch_trial = [(EEG.event(epoch+2).latency-EEG.event(epoch).latency)/512+1]; % get the time of the trial
+    
+    tNum = tNum +1; % trial number
+    
+    dir_trl = [subjFolder '\\'];
+    filename_trl = [EEG.filename(1:end-4) '_t' num2str(tNum) '.set'];
     
     pop_rmdat( EEG, {EEG.event(epoch).type}, [-1 epoch_trial],0 ); %cut our trials
-    
-    tNum = tNum +1; % trail number
-    filename_trial = [subjFolder '/' ALLEEG(2).filename '_t' num2str(tNum)]; % filename
-    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,'savenew', filename_trial,'gui','off'); %save trial
+    %[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,'savenew', filename_trial,'gui','off'); %save trial
+     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'savenew',[dir_trl filename_trl],'gui','off'); 
+   
+     
+     
+EEG = pop_rmdat( EEG, {'1  0  0'},[-1 118] ,0);
+[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'savenew','D:\\SSMZ\\MZ\\01_3_MZ_filt_ica_trim_t1.set','gui','off'); 
+
+     
+     
+     
+     
+     
+     
+    %[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'setname','test_MZ_t1','savenew','D:\\SSMZ\\MZ\\test_MZ_t1.set','gui','off'); 
     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,'retrieve',2,'study',0);
     ALLEEG(3)=[];
 
