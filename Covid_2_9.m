@@ -58,7 +58,7 @@ i=1;
         else
         end
     end
-    
+     i
     subjFolder = ([foldername '\\' data(6:7)]);
     mkdir(subjFolder);
     
@@ -161,7 +161,7 @@ i=1;
     end
    %% ADD -45S TRIGGER
    % Get the latencies (data point indices) for all '999' type events...
-   for i = 1:size(EEG.event,2),EEG.event(i).type=num2str(EEG.event(i).type);end
+   for j = 1:size(EEG.event,2),EEG.event(j).type=num2str(EEG.event(j).type);end
    endLatencies = [EEG.event(find(strcmp('999',{EEG.event.type}))).latency];
 %    
 %     EEG = eeg_checkset( EEG );
@@ -219,26 +219,28 @@ end
   prevCheck(:,4)= prevCheck(:,4) - prevCheck(1,4) ;
   
   %% LOAD OTHER DATA-SET
+  
+  
     %% LOAD SECOND SUBJECT EEG DATA    
-    %%!!!!!!!!!!!!!!!!!! NEED TO CHANGE DIRECTORIES!!!q!
+    %%!!!!!!!!!!!!!!!!!! NEED TO CHANGE DIRECTORIES!!!
     % Load the correct directory
-    cd('D:\groupFlow_3\ICA\');
-    p3x = dir('D:\groupFlow_3\ICA\*.set');
+    cd('D:\groupFlow_1\ICA\');
+    p1x = dir('D:\groupFlow_1\ICA\*.set');
     p = num2str(i);
-    p3 = '_3';
+    p1 = '_1';
     
     % Look through all the EEG files and indicate possible matches
-    for j = 1:length(p3x)
-        if contains(p3x(j).name,strcat(p,p3))
-             if contains(p3x(j).name,'EC_filt')
+    for j = 1:length(p1x)
+        if contains(p1x(j).name,strcat(p,p1))
+             if contains(p1x(j).name,'EC_filt')
                  %EC = Eyes Closed; i.e. the baseline measure
              else
                 Bx(i).name
-                p3x(j).name
+                p1x(j).name
                 checkFile = input('Press 1 if correct file ID: '); %INPUT%
                 if checkFile
-                    data = p3x(j).name;
-                    j = length(p3x);
+                    data = p1x(j).name;
+                    j = length(p1x);
                 else
                 end
             end
@@ -246,7 +248,7 @@ end
         end
     end
     
-    EEG = pop_loadset('filename',data,'filepath','D:\\groupFlow_3\\ICA\\');
+    EEG = pop_loadset('filename',data,'filepath','D:\\groupFlow_1\\ICA\\');
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0);
     EEG = eeg_checkset( EEG );
     % eeglab redraw
@@ -339,7 +341,7 @@ end
     end
    %% ADD -45S TRIGGER
    % Get the latencies (data point indices) for all '999' type events...
-   for i = 1:size(EEG.event,2),EEG.event(i).type=num2str(EEG.event(i).type);end
+   forj= 1:size(EEG.event,2),EEG.event(j).type=num2str(EEG.event(j).type);end
    endLatencies = [EEG.event(find(strcmp('999',{EEG.event.type}))).latency];
 %    
 %     EEG = eeg_checkset( EEG );
@@ -358,27 +360,25 @@ end
    
    
      %% SAVE THE FINALISED DATA-SET 
-%     EEG = eeg_checkset( EEG );
-%     EEG = pop_saveset( EEG, 'savemode','resave');
-%     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
+    EEG = eeg_checkset( EEG );
+    EEG = pop_saveset( EEG, 'savemode','resave');
+    [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
     
-%     %% CUT BOTH DATA SETS TO -1 BEFORE FIRST TRIAL
-%     
-%     removeStart = [-EEG.event(1).latency/512 -1];
-%     EEG = pop_editeventvals(EEG,'changefield',{1 'type' 1});
-% 
-%     EEG = pop_rmdat( EEG, '1', removeStart ,0);
-%     EEG.event=[];
-%      
-%     % change from current data-est to other participants dataset
-%     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,'retrieve',2,'study',0);
-% 
-% 
-%    removeStart = [-EEG.event(1).latency/512 -1];
-%     
-%    EEG = pop_rmdat( EEG, EEG.event(1).type, removeStart ,0);
-
+   %%  CUT OUT EACH TRIAL
+tNum=0;
+for epoch = 1:3:length(EEG.event)
+    epoch_trial = [(EEG.event(epoch+2).latency-EEG.event(epoch).latency)/512+1]; % get the time of the trial
+    
+    tNum = tNum +1; % trial number
+    
+    dir_trl = [subjFolder '\\'];
+    filename_trl = [EEG.filename(1:end-4) '_t' num2str(tNum) '.set'];
+    EEG = eeg_checkset( EEG );
+    EEG = pop_rmdat( EEG, {EEG.event(epoch).type}, [-1 epoch_trial],0 ); %cut our trials
+    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'savenew',[dir_trl filename_trl],'gui','off'); %save trial
+    EEG = eeg_checkset( EEG );
+    ALLEEG(3)=[];
+    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,'retrieve',2,'study',0);
+    
+end
   
-  
-
- end
