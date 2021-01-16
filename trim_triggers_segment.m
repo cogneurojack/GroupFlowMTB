@@ -28,7 +28,7 @@ close all
 format shortG % This sets the format of values toprevent use of power function (so I can see actual values)
 eeglab nogui
 i=1;
- for i =5:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
+ for i =6:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
     %% 0) Open trialDat file
     cd('D:\groupFlow_trialDat\')
     Bx = dir('D:\groupFlow_trialDat\*.xls');
@@ -58,11 +58,7 @@ i=1;
         if contains(p3x(j).name,strcat(p,p3))
              if contains(p3x(j).name,'EC_filt')
                  %EC = Eyes Closed; i.e. the baseline measure
-                 
-             elseif    contains(p3x(j).name,'_m')
-                 [' !!!!!!!!!!!!!!!! CAUTION MERGED DATASET !!!!!!!!!!!!!!!! ' newline ...
-                  'TRIGGER LATENCY WILL BE DIFFERENT FOR THE TWO PARTICIPANTS' newline ...
-                  '            CHECK THROUGH TRIGGGERS MANUALLY']   
+ 
              else
                 Bx(i).name
                 p3x(j).name
@@ -116,7 +112,7 @@ i=1;
     
     
 %% 2) Remove start trigger
-    % remove the first event as just trial start event
+%    remove the first event as just trial start event
     EEG.event(1)=[];
     
     EEG = eeg_checkset( EEG );

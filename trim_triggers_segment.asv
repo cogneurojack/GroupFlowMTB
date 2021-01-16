@@ -28,7 +28,7 @@ close all
 format shortG % This sets the format of values toprevent use of power function (so I can see actual values)
 eeglab nogui
 i=1;
- for i =4:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
+ for i =5:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
     %% 0) Open trialDat file
     cd('D:\groupFlow_trialDat\')
     Bx = dir('D:\groupFlow_trialDat\*.xls');
@@ -37,7 +37,7 @@ i=1;
     grpInf = readtable(Bx(i).name);
     
     % create folder for each subject & subject pair
-    foldername = ['D:\\' (Bx(i).name(4:7))];
+    foldername = ['D:\\clean EEG data\\' (Bx(i).name(4:7))];
     mkdir(foldername);
     
     % remove practic'e' trials
@@ -116,7 +116,7 @@ i=1;
     
     
 %% 2) Remove start trigger
-    % remove the first event as just trial start event
+%    remove the first event as just trial start event
     EEG.event(1)=[];
     
     EEG = eeg_checkset( EEG );
