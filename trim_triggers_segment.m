@@ -25,10 +25,10 @@
 
 clear all
 close all
-format shortG % This sets the format of values toprevent use of paower function (so I can see actual values)
+format shortG % This sets the format of values toprevent use of power function (so I can see actual values)
 eeglab nogui
 i=1;
- for i =[1 4:length('D:\groupFlow_trialDat\')] % first 4 pairs need to be checked by hand
+ for i =4:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
     %% 0) Open trialDat file
     cd('D:\groupFlow_trialDat\')
     Bx = dir('D:\groupFlow_trialDat\*.xls');
@@ -58,6 +58,11 @@ i=1;
         if contains(p3x(j).name,strcat(p,p3))
              if contains(p3x(j).name,'EC_filt')
                  %EC = Eyes Closed; i.e. the baseline measure
+                 
+             elseif    contains(p3x(j).name,'_m')
+                 [' !!!!!!!!!!!!!!!! CAUTION MERGED DATASET !!!!!!!!!!!!!!!! ' newline ...
+                  'TRIGGER LATENCY WILL BE DIFFERENT FOR THE TWO PARTICIPANTS' newline ...
+                  '            CHECK THROUGH TRIGGGERS MANUALLY']   
              else
                 Bx(i).name
                 p3x(j).name
@@ -129,17 +134,17 @@ i=1;
                 n_events=length(EEG.event); % give no. of events a var name 
                 EEG.event(n_events+1).type = endTrig; % add new event (with end-point var name)
                 EEG.event(n_events+1).latency =((EEG.event(l).latency) + ...
-                table2array(grpInf(l+ept_n,4))*512);  % change latency in line with end of trial no
-                EEG.event(n_events+1).urevent = n_events+1;
+                table2array(grpInf(l+ept_n,4))*512;  % change latency in line with end of trial no
+                EEG.event(n_events+1).urevent = n_events+1; 
         else 
             ept_n=ept_n+1;
         end
     end
     
-    % The last trial is PB and thus neved has a end-point event
+    % The last trial is PB and thus never has an end-point event
     EEG.event(n_events+2).type = endTrig;
     EEG.event(n_events+2).latency =((EEG.event(l).latency) + ...
-                table2array(grpInf(end,4))*512);
+    table2array(grpInf(end,4))*512);
     EEG.event(n_events+2).urevent = n_events+1;
 %% 4) delete any unused trials
 
@@ -175,7 +180,7 @@ i=1;
     EEG = pop_saveset( EEG, 'savemode','resave');
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
     
-    if length(EEG.event) ~= size((grpInf),1)*2
+    if length(EEG.event) ~= size((grpInf),1)
         {EEG.event.type}'
         error('incorrect number of trials. Check all triggers are correct')
         

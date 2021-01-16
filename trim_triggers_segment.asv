@@ -25,10 +25,10 @@
 
 clear all
 close all
-format shortG % This sets the format of values toprevent use of paower function (so I can see actual values)
+format shortG % This sets the format of values toprevent use of power function (so I can see actual values)
 eeglab nogui
 i=1;
- for i =[1 4:length('D:\groupFlow_trialDat\')] % first 4 pairs need to be checked by hand
+ for i =4:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
     %% 0) Open trialDat file
     cd('D:\groupFlow_trialDat\')
     Bx = dir('D:\groupFlow_trialDat\*.xls');
@@ -58,6 +58,11 @@ i=1;
         if contains(p3x(j).name,strcat(p,p3))
              if contains(p3x(j).name,'EC_filt')
                  %EC = Eyes Closed; i.e. the baseline measure
+                 
+             elseif    contains(p3x(j).name,'_m')
+                 [' !!!!!!!!!!!!!!!! CAUTION MERGED DATASET !!!!!!!!!!!!!!!! ' newline ...
+                  'TRIGGER LATENCY WILL BE DIFFERENT FOR THE TWO PARTICIPANTS' newline ...
+                  '            CHECK THROUGH TRIGGGERS MANUALLY']   
              else
                 Bx(i).name
                 p3x(j).name
@@ -304,8 +309,8 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
     % cycle through all triggers from Biosemi 3 and add to Biosemi 1
     b3_trig;
     for b1_trgr=1:length(b3_trig)
-        EEG.event(b1_trgr).type = b3_trig.type(b1_trgr);
-        EEG.event(b1_trgr).latency = b3_trig.latency(b1_trgr);
+        EEG.event(b1_trgr).type = b3_trig(b1_trgr).type;
+        EEG.event(b1_trgr).latency = b3_trig(b1_trgr).latency;
         EEG.event(b1_trgr).urevent = EEG.event(end).urevent+1;
     end
     
@@ -352,6 +357,9 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
         dir_trl = [subj1Folder '\\'];
         [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'retrieve',4,'study',0);
     end
+    
+    % clear all EEG file  in preperation for the next pair
+    ALLEEG = [];
 
 
  end
