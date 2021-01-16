@@ -232,7 +232,7 @@ i=1;
  trigCheck = []
  for trig_l =1:length(EEG.event)
 trigCheck(trig_l,1) = str2num(EEG.event(trig_l).type(1));
-trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
+trigCheck(t,2) = [EEG.event(trig_l).latency]/512;
  end
  'Check trigger are correct'
  trigCheck
