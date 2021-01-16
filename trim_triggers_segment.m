@@ -28,7 +28,7 @@ close all
 format shortG % This sets the format of values toprevent use of power function (so I can see actual values)
 eeglab nogui
 i=1;
- for i =4:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
+ for i =5:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
     %% 0) Open trialDat file
     cd('D:\groupFlow_trialDat\')
     Bx = dir('D:\groupFlow_trialDat\*.xls');
@@ -37,7 +37,7 @@ i=1;
     grpInf = readtable(Bx(i).name);
     
     % create folder for each subject & subject pair
-    foldername = ['D:\\' (Bx(i).name(4:7))];
+    foldername = ['D:\\clean EEG data\\' (Bx(i).name(4:7))];
     mkdir(foldername);
     
     % remove practic'e' trials
@@ -136,7 +136,7 @@ i=1;
         'OFF_type'})
     
     void = input( ['Input the urevent number of any events that will not be used, such as unused trials' newline...
-        'use the stimCopm urevent to seee if there were any trials that were resarted, then compare with ON_urevents: '] ); %INPUT%
+        'use the stimComp urevent to seee if there were any trials that were resarted, then compare with ON_urevents: '] ); %INPUT%
     
     % Delete any unused trials
     idx = cell2mat(cellfun(@(x) ismember(x,void), {EEG.event.urevent},'UniformOutput', false));
@@ -144,19 +144,9 @@ i=1;
 
     % re-save the file
     EEG = pop_saveset( EEG, 'savemode','resave');
-    [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
+    [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, CURRENTSET );
     EEG = eeg_checkset( EEG );
 
-    % Re-save file with only correct events
-    if length(EEG.event) ~= size((grpInf),1)*2
-        {EEG.event.type}'
-        'incorrect number of trials. Check all triggers are correct'
-        pause
-    end
-    
-    EEG = eeg_checkset( EEG );
-    EEG = pop_saveset( EEG, 'savemode','resave');
-    [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
     %% 3) add in any missing end-point triggers
     % Determine the 'type' for end point triggers    
     [[EEG.event.type]; [EEG.event.latency]/512]'
@@ -171,7 +161,7 @@ i=1;
                 n_events=length(EEG.event); % give no. of events a var name 
                 EEG.event(n_events+1).type = endTrig; % add new event (with end-point var name)
                  EEG.event(n_events+1).latency =((EEG.event(l).latency) + ...
-                 table2array(grpInf(l+ept_n,4))*512);  % change latency in line with end of trial no
+                 ((EEG.event(l-1).latency) -(EEG.event(l-2).latency)));  % change latency in line with end of trial no
                  EEG.event(n_events+1).urevent = n_events+1; 
         else 
             ept_n=ept_n+1;
@@ -181,34 +171,37 @@ i=1;
     % The last trial is PB and thus never has an end-point event
     EEG.event(n_events+2).type = endTrig;
     EEG.event(n_events+2).latency =((EEG.event(l).latency) + ...
-    table2array(grpInf(end,4))*512);
+    ((EEG.event(l-1).latency) -(EEG.event(l-2).latency)));
     EEG.event(n_events+2).urevent = n_events+1;
 
+    % Re-save file with only correct events
     if length(EEG.event) ~= size((grpInf),1)*2
         {EEG.event.type}'
-        error('incorrect number of trials. Check all triggers are correct')
-        
+        'incorrect number of trials. Check all triggers are correct'
+        pause
     end
     
     EEG = eeg_checkset( EEG );
     EEG = pop_saveset( EEG, 'savemode','resave');
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
-%% 5) Rename start triggers
+%% 5) Rename start and end triggers
 
     idx = ismember([EEG.event.type],endTrig);
     trl=1;
     for l = 1:length(EEG.event)
         if idx(l)==0
-        EEG.event(l).type = num2str([trlInf(trl,2) trlInf(trl,1) table2array(grpInf(trl,5))]);
+        EEG.event(l).type = num2str([ (trl) trlInf(trl,1) table2array(grpInf(trl,5))]);
         
         trl=trl+1;
+        else 
+        EEG.event(l).type = '999';
         end
     end
 
 %% 6) Add -45 triggers
    % Get the latencies (data point indices) for all '999' type events...
    for j = 1:size(EEG.event,2),EEG.event(j).type=num2str(EEG.event(j).type);end
-   endLatencies = [EEG.event(find(strcmp(num2str(endTrig),{EEG.event.type}))).latency];
+   endLatencies = [EEG.event(find(strcmp('999',{EEG.event.type}))).latency];
    
    % Go through file and add -45s triggers
    for l=1:length(endLatencies)
@@ -236,15 +229,12 @@ i=1;
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
 %% 9) Copy  triggers (type and latency) to spreadsheet)
 
-
-
-
  trigCheck = [];
  for trig_l =1:5
 trigCheck(trig_l,1) = str2num(EEG.event(trig_l).type(1));
 trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
  end
- 'Check trigger are correct'
+ 'Check trigger are correct';
  trigCheck
  pause
  
@@ -296,8 +286,14 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
     
 %% 11) locate the trigger indicating the beginning of the first trial in subject B
 
-    trigCheck = [trigCheck [EEG.event(1:5).latency]'/512 [EEG.event(1:5).type]']
-    strt_trgr = input('which trigger number (i.e. 1st, 2nd, 3rd trigger etc) indicates the beginning of the first trial?')
+    trigCheck = [trigCheck [EEG.event(1:5).latency]'/512 [EEG.event(1:5).type]'];
+    [grpInf(1:5,3:4)...
+        array2table(trigCheck,'VariableNames',...
+        {'B3 trigger',...
+        'B3 latency',...
+        'B1 latency',...
+        'B1 trigger'})]
+    strt_trgr = input('which trigger number (i.e. 1st, 2nd, 3rd trigger etc) indicates the beginning of the first trial?');
     EEG.event([1:strt_trgr-1 strt_trgr+1:end])=[];
     
 %% 12) cut to -1s before that trigger
