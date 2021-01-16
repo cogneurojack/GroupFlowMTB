@@ -28,7 +28,7 @@ close all
 format shortG % This sets the format of values toprevent use of power function (so I can see actual values)
 eeglab nogui
 i=1;
- for i =6:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
+ for i =10:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
     %% 0) Open trialDat file
     cd('D:\groupFlow_trialDat\')
     Bx = dir('D:\groupFlow_trialDat\*.xls');
@@ -230,7 +230,7 @@ i=1;
 trigCheck(trig_l,1) = str2num(EEG.event(trig_l).type(1));
 trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
  end
- 'Check trigger are correct';
+ 'Check trigger are correct'
  trigCheck
  pause
  
