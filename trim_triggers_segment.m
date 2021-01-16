@@ -160,7 +160,7 @@ i=1;
     EEG.event(idx) = [];
 
     % re-save the file
-    EEG = pop_saveset( EEG, 'filename',filename,'filepath',filepath);
+    EEG = pop_saveset( EEG, 'savemode','resave');
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
     EEG = eeg_checkset( EEG );
 
@@ -217,9 +217,10 @@ i=1;
     EEG = pop_saveset( EEG, 'savemode','resave');
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
 %% 8) Cut file to -1 berfore trial 1
-    
+
     EEG = eeg_checkset( EEG );
     EEG = pop_rmdat( EEG, {EEG.event(1).type}, [-1 EEG.pnts/512],0 );
+    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'overwrite','on','gui','off');
     %remove start trigger boundary
     EEG.event(1) = [];
     EEG = pop_saveset( EEG, 'savemode','resave');
@@ -229,8 +230,8 @@ i=1;
 
 
 
- trigCheck = []
- for trig_l =1:length(EEG.event)
+ trigCheck = [];
+ for trig_l =1:5
 trigCheck(trig_l,1) = str2num(EEG.event(trig_l).type(1));
 trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
  end
@@ -267,7 +268,7 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
     end
     
     % make folder for that subject
-    subj1Folder = ([foldername '\\' data(4:5)]);
+    subj1Folder = ([foldername '\\' data(6:7)]);
     mkdir(subj1Folder);
     
     % open the dataset
@@ -286,29 +287,26 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
     
 %% 11) locate the trigger indicating the beginning of the first trial in subject B
 
-comp_tble = [comp_tble [EEG.event(1:10).latency]'/512 [EEG.event(1:10).type]'];
-strt_trgr = input('which trigger number indicates the beginning of the first trial?')
-EEG.event(~strt_trgr) = [];
-
-
-
-%% 12) cut to -1s before that trigger
+    trigCheck = [trigCheck [EEG.event(1:5).latency]'/512 [EEG.event(1:5).type]']
+    strt_trgr = input('which trigger number (i.e. 1st, 2nd, 3rd trigger etc) indicates the beginning of the first trial?')
+    EEG.event([1:strt_trgr-1 strt_trgr+1:end])=[];
     
+%% 12) cut to -1s before that trigger
     EEG = eeg_checkset( EEG );
-    EEG = pop_rmdat( EEG, {strt_trgr}, [-1 EEG.pnts/512],0 );
+    EEG = pop_rmdat( EEG, {num2str(EEG.event.type)}, [-1 EEG.pnts/512],0 );
+    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,'overwrite','on','gui','off'); 
+    EEG.event(1) = [];
     EEG = pop_saveset( EEG, 'savemode','resave');
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
     
-    
-
 %% 14) copy and past the triggers from subject A into subject B
     
     % cycle through all triggers from Biosemi 3 and add to Biosemi 1
-    comp_tble
-    for b1_trgr=1:length(comp_tble)
-        EEG.event(b1_trgr+1).type=comp_tble(b1_trgr,2);
-        EEG.event(b1_trgr+1).latency=comp_tble(b1_trgr,1);
-        EEG.event(b1_trgr+1).urevent=EEG.event(end).urevent+1;
+    b3_trig;
+    for b1_trgr=1:length(b3_trig)
+        EEG.event(b1_trgr).type = b3_trig(b1_trgr).type;
+        EEG.event(b1_trgr).latency = b3_trig(b1_trgr).latency;
+        EEG.event(b1_trgr).urevent = EEG.event(end).urevent+1;
     end
     
    % Re-save the dataset
@@ -354,6 +352,9 @@ EEG.event(~strt_trgr) = [];
         dir_trl = [subj1Folder '\\'];
         [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'retrieve',4,'study',0);
     end
+    
+    % clear all EEG file  in preperation for the next pair
+    ALLEEG = [];
 
 
  end
