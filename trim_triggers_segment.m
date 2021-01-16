@@ -100,7 +100,7 @@ i=1;
     trlInf(1:length(stimTrialNum),2:3) = [stimTrialNum stimTrialLngth];
     
     % locate trigger for trial 1
-    [[EEG.event(1:length(EEG.event)).type]; [EEG.event(1:length(EEG.event)).latency]/512]'
+    [[EEG.event(1:5).type]; [EEG.event(1:5).latency]/512]'
     trigNum = input('Check start trigger num as it appears this can change: '); %INPUT%
     
     % add tor comparison table for use later
@@ -120,45 +120,23 @@ i=1;
     EEG.event(1)=[];
     
     EEG = eeg_checkset( EEG );
-%% 3) add in any missing end-point triggers
-    % Determine the 'type' for end point triggers    
-    [[EEG.event.type]; [EEG.event.latency]/512]'
-    endTrig = input('What is the end-point trigger number: '); %INPUT%
-    
-    idx = cell2mat({EEG.event(:).type}) == endTrig; %logical if end-point trigger
-    ept_n = 0; % number of end point triggers currently reported
-    for l = 1:length(idx)% for all events
-        if ~idx(l) &&... % if the current event is not end-point trigger
-                EEG.event(l+1).type ~= endTrig % and the next event is not end-point trigger
-            
-                n_events=length(EEG.event); % give no. of events a var name 
-                EEG.event(n_events+1).type = endTrig; % add new event (with end-point var name)
-                EEG.event(n_events+1).latency =((EEG.event(l).latency) + ...
-                table2array(grpInf(l+ept_n,4))*512;  % change latency in line with end of trial no
-                EEG.event(n_events+1).urevent = n_events+1; 
-        else 
-            ept_n=ept_n+1;
-        end
-    end
-    
-    % The last trial is PB and thus never has an end-point event
-    EEG.event(n_events+2).type = endTrig;
-    EEG.event(n_events+2).latency =((EEG.event(l).latency) + ...
-    table2array(grpInf(end,4))*512);
-    EEG.event(n_events+2).urevent = n_events+1;
 %% 4) delete any unused trials
 
     % output a table showing the time between each trial
     cd('C:\Users\Jack Moore\OneDrive - Goldsmiths College\Projects\Group Flow\GroupFlowMTB');
-    [trlInf] = dataInfo(trlInf, EEG, grpInf, trigNum) ;
-    array2table(trlInf(:,4:end),'VariableNames',...
-        {'trlLength',...
+    [trlInf] = dataInfo(trlInf, EEG, grpInf(:,3), trigNum) ;
+    array2table(trlInf ,'VariableNames',...
+        {'if PB'...
+        ['StimComp urevent']...
+        'Approx trlLength'...
+        'trlLength',...
         'ON_urevent',...
         'ON_type',...
         'OFF_urevent',...
         'OFF_type'})
     
-    void = input( 'Input the urevent number of any events that will not be used, such as unused trials: '); %INPUT%
+    void = input( ['Input the urevent number of any events that will not be used, such as unused trials' newline...
+        'use the stimCopm urevent to seee if there were any trials that were resarted, then compare with ON_urevents: '] ); %INPUT%
     
     % Delete any unused trials
     idx = cell2mat(cellfun(@(x) ismember(x,void), {EEG.event.urevent},'UniformOutput', false));
@@ -173,14 +151,40 @@ i=1;
     if length(EEG.event) ~= size((grpInf),1)*2
         {EEG.event.type}'
         'incorrect number of trials. Check all triggers are correct'
-        break
+        pause
     end
     
     EEG = eeg_checkset( EEG );
     EEG = pop_saveset( EEG, 'savemode','resave');
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
+    %% 3) add in any missing end-point triggers
+    % Determine the 'type' for end point triggers    
+    [[EEG.event.type]; [EEG.event.latency]/512]'
+    endTrig = input('What is the end-point trigger number: '); %INPUT%
     
-    if length(EEG.event) ~= size((grpInf),1)
+    idx = cell2mat({EEG.event(:).type}) == endTrig; %logical if end-point trigger
+    ept_n = 0; % number of end point triggers currently reported
+    for l = 1:length(idx)% for all events
+        if ~idx(l) &&... % if the current event is not end-point trigger
+                EEG.event(l+1).type ~= endTrig % and the next event is not end-point trigger
+            
+                n_events=length(EEG.event); % give no. of events a var name 
+                EEG.event(n_events+1).type = endTrig; % add new event (with end-point var name)
+                 EEG.event(n_events+1).latency =((EEG.event(l).latency) + ...
+                 table2array(grpInf(l+ept_n,4))*512);  % change latency in line with end of trial no
+                 EEG.event(n_events+1).urevent = n_events+1; 
+        else 
+            ept_n=ept_n+1;
+        end
+    end
+   
+    % The last trial is PB and thus never has an end-point event
+    EEG.event(n_events+2).type = endTrig;
+    EEG.event(n_events+2).latency =((EEG.event(l).latency) + ...
+    table2array(grpInf(end,4))*512);
+    EEG.event(n_events+2).urevent = n_events+1;
+
+    if length(EEG.event) ~= size((grpInf),1)*2
         {EEG.event.type}'
         error('incorrect number of trials. Check all triggers are correct')
         
