@@ -211,9 +211,10 @@ eeglab nogui
        
        % record if trial is +- 45s
        trlInf(l/2,9) = 1;
+       else
+       trlInf(l/2,9) = 0;
        end
        
-       trlInf(l/2,9) = 0;
    end
    
    % check for consistency and reorder the events chronologically...
@@ -321,9 +322,9 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
     
    % Re-save the dataset
     EEG = eeg_checkset( EEG );
-    EEG = pop_rmdat( EEG, {strt_trgr}, [-1 EEG.pnts/512],0 ); 
+    EEG = pop_rmdat( EEG, {1}, [-1 EEG.pnts/512],0 ); 
     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,'overwrite','on','gui','off'); 
-    EEG.event(1) = [];
+    if cell2mat({EEG.event(1).type(1)}) == 'b',  EEG.event(1) = []; end
     EEG = eeg_checkset( EEG );
     EEG = pop_saveset( EEG, 'savemode','resave');
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
@@ -362,7 +363,6 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
             ALLEEG(5)=[];
             [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 5,'retrieve',eachSubj*2,'study',0);
             trigNum = trigNum+if45+1
-            epoch
         end
 
         dir_trl = [subj1Folder '\\'];
