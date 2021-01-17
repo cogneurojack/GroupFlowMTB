@@ -342,7 +342,8 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
         % trigger number
         trigNum=1;
         for epoch = 1:size(grpInf,1)
-            if trlInf(epoch,9)==1, if45 = 2;else; if45 = 1; end 
+            % check if +<45s
+            if trlInf(epoch,9)==1, if45 = 2; else; if45 = 1; end 
             epoch_trial = [(EEG.event(trigNum+if45).latency-EEG.event(trigNum).latency)/512+1]; % get the time of the trial
      
             % create file name
@@ -354,13 +355,14 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
             
             % save file
             [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, eachSubj*2,'savenew',[dir_trl filename_trl],'gui','off'); %save trial
-            EEG.event(1) = [];
+            if cell2mat({EEG.event(1).type(1)}) == 'b',  EEG.event(1) = []; end
             EEG = eeg_checkset( EEG );
             EEG = pop_saveset( EEG, 'savemode','resave');
             [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
             ALLEEG(5)=[];
             [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 5,'retrieve',eachSubj*2,'study',0);
-            trigNum = trigNum+if45+1;
+            trigNum = trigNum+if45+1
+            epoch
         end
 
         dir_trl = [subj1Folder '\\'];
