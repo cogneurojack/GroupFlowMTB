@@ -22,7 +22,6 @@
 %14) copy and past the triggers from subject A into subject B
 %15) cut-out each trial for both stubjects  and save to subject folder (+&- 1s)
 
-
 clear all
 close all
 format shortG % This sets the format of values toprevent use of power function (so I can see actual values)
@@ -129,7 +128,8 @@ eeglab nogui
         'ON_urevent',...
         'ON_type',...
         'OFF_urevent',...
-        'OFF_type'})
+        'OFF_type',...
+        '+-45s'})
     
     void = input( ['Input the urevent number of any events that will not be used, such as unused trials' newline...
         'use the stimComp urevent to seee if there were any trials that were resarted, then compare with ON_urevents: '] ); %INPUT%
@@ -321,10 +321,12 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
     
    % Re-save the dataset
     EEG = eeg_checkset( EEG );
-    EEG = pop_rmdat( EEG, {strt_trgr}, [-1 EEG.pnts/512],0 );
+    EEG = pop_rmdat( EEG, {strt_trgr}, [-1 EEG.pnts/512],0 ); 
+    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,'overwrite','on','gui','off'); 
+    EEG.event(1) = [];
+    EEG = eeg_checkset( EEG );
     EEG = pop_saveset( EEG, 'savemode','resave');
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
-
 
 %% 15) cut-out each trial for both stubjects  and save to subject folder (+&- 1s)
     
@@ -337,27 +339,28 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
         % Ensure looking at correct data set
         [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,'retrieve',eachSubj*2,'study',0);
         
-        % trial number
-        tNum=0; 
-
-        for epoch = 1:length(EEG.event)
-            if trlInf
-            epoch_trial = [(EEG.event(epoch+2).latency-EEG.event(epoch).latency)/512+1]; % get the time of the trial
-        % trial number
-            tNum = tNum +1;
+        % trigger number
+        trigNum=1;
+        for epoch = 1:size(grpInf,1)
+            if trlInf(epoch,9)==1, if45 = 2;else; if45 = 1; end 
+            epoch_trial = [(EEG.event(trigNum+if45).latency-EEG.event(trigNum).latency)/512+1]; % get the time of the trial
+     
             % create file name
-            filename_trl = [EEG.filename(1:end-4) '_t' num2str(tNum) '.set'];
+            filename_trl = [EEG.filename(1:end-4) '_t' num2str(epoch) '.set'];
             
             % cut our trials
             EEG = eeg_checkset( EEG );
-            EEG = pop_rmdat( EEG, {EEG.event(epoch).type}, [-1 epoch_trial],0 ); %cut our trials
+            EEG = pop_rmdat( EEG, {EEG.event(trigNum).type}, [-1 epoch_trial],0 ); %cut our trials
             
             % save file
             [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, eachSubj*2,'savenew',[dir_trl filename_trl],'gui','off'); %save trial
+            EEG.event(1) = [];
             EEG = eeg_checkset( EEG );
+            EEG = pop_saveset( EEG, 'savemode','resave');
+            [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
             ALLEEG(5)=[];
             [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 5,'retrieve',eachSubj*2,'study',0);
-
+            trigNum = trigNum+if45+1;
         end
 
         dir_trl = [subj1Folder '\\'];
