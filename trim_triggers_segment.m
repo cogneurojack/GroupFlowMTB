@@ -364,6 +364,7 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
             [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 5,'retrieve',eachSubj*2,'study',0);
             trigNum = trigNum+if45+1
         end
+        
 
         dir_trl = [subj1Folder '\\'];
         [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'retrieve',4,'study',0);
