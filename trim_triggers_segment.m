@@ -28,16 +28,16 @@ close all
 format shortG % This sets the format of values toprevent use of power function (so I can see actual values)
 eeglab nogui
 
- for i =11:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
+ for i =11:length('E:\DATA\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
     %% 0) Open trialDat file
-    cd('D:\groupFlow_trialDat\')
-    Bx = dir('D:\groupFlow_trialDat\*.xls');
+    cd('E:\DATA\groupFlow_trialDat\')
+    Bx = dir('E:\DATA\groupFlow_trialDat\*.xls');
     
     % Sort data
     grpInf = readtable(Bx(i).name);
     
     % create folder for each subject & subject pair
-    foldername = ['D:\\clean EEG data\\' (Bx(i).name(4:7))];
+    foldername = ['E:\\DATA\\clean EEG data\\' (Bx(i).name(4:7))];
     mkdir(foldername);
     
     % remove practic'e' trials
@@ -48,8 +48,8 @@ eeglab nogui
     
    %% 0.1) open Biosemi 3 subject data
    % Load the correct directory
-   cd('D:\groupFlow_3\ICA\');
-   p3x = dir('D:\groupFlow_3\ICA\*.set');
+   cd('E:\DATA\groupFlow_3\ICA\');
+   p3x = dir('E:\DATA\groupFlow_3\ICA\*.set');
    p = num2str(i);
    p3 = '_3';
    
@@ -77,7 +77,7 @@ eeglab nogui
     mkdir(subj3Folder);
     
     % load their EEG data
-    EEG = pop_loadset('filename',data,'filepath','D:\\groupFlow_3\\ICA\\');
+    EEG = pop_loadset('filename',data,'filepath','E:\\DATA\\groupFlow_3\\ICA\\');
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0);
     EEG = eeg_checkset( EEG );
     
@@ -85,7 +85,7 @@ eeglab nogui
     %% 1) locate correct triggers indicating beginning and end of each trial in Biosemi 3
     
     % Create new table that will have both the behave and EEG data in it
-    trlInf = zeros(length(EEG.event),8);
+    trlInf = zeros(length(EEG.event),9);
     stimTrialNum = table2array(grpInf(:,3));
     stimTrialLngth = table2array(grpInf(:,4));
     
@@ -208,7 +208,12 @@ eeglab nogui
        EEG.event(n_events+1).type='45';
        EEG.event(n_events+1).latency=(EEG.event(l).latency-(45*EEG.srate));
        EEG.event(n_events+1).urevent=n_events+1;
+       
+       % record if trial is +- 45s
+       trlInf(l/2,9) = 1;
        end
+       
+       trlInf(l/2,9) = 0;
    end
    
    % check for consistency and reorder the events chronologically...
@@ -242,8 +247,8 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
  
 %% 10) Open Biosemi 1 for that pair
     % Load the correct directory
-    cd('D:\groupFlow_1\ICA\');
-    p1x = dir('D:\groupFlow_1\ICA\*.set');
+    cd('E:\DATA\groupFlow_1\ICA\');
+    p1x = dir('E:\DATA\groupFlow_1\ICA\*.set');
     p = num2str(i);
     p1 = '_1';
     
@@ -271,7 +276,7 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
     mkdir(subj1Folder);
     
     % open the dataset
-    EEG = pop_loadset('filename',data,'filepath','D:\\groupFlow_1\\ICA\\');
+    EEG = pop_loadset('filename',data,'filepath','E:\\DATA\\groupFlow_1\\ICA\\');
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0);
     EEG = eeg_checkset( EEG );
     
@@ -335,7 +340,8 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
         % trial number
         tNum=0; 
 
-        for epoch = 1:3:length(EEG.event)
+        for epoch = 1:length(EEG.event)
+            if trlInf
             epoch_trial = [(EEG.event(epoch+2).latency-EEG.event(epoch).latency)/512+1]; % get the time of the trial
         % trial number
             tNum = tNum +1;
