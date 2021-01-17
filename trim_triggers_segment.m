@@ -27,8 +27,8 @@ clear all
 close all
 format shortG % This sets the format of values toprevent use of power function (so I can see actual values)
 eeglab nogui
-i=1;
- for i =10:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
+
+ for i =11:length('D:\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
     %% 0) Open trialDat file
     cd('D:\groupFlow_trialDat\')
     Bx = dir('D:\groupFlow_trialDat\*.xls');
@@ -163,12 +163,12 @@ i=1;
             ept_n=ept_n+1;
         end
     end
-   
-    % The last trial is PB and thus never has an end-point event
-    EEG.event(n_events+2).type = endTrig;
-    EEG.event(n_events+2).latency =((EEG.event(l).latency) + ...
-    ((EEG.event(l-1).latency) -(EEG.event(l-2).latency)));
-    EEG.event(n_events+2).urevent = n_events+1;
+%    
+%     % The last trial is PB and thus never has an end-point event
+%     EEG.event(n_events+2).type = endTrig;
+%     EEG.event(n_events+2).latency =((EEG.event(l).latency) + ...
+%     ((EEG.event(l-1).latency) -(EEG.event(l-2).latency)));
+%     EEG.event(n_events+2).urevent = n_events+1;
 
     % Re-save file with only correct events
     if length(EEG.event) ~= size((grpInf),1)*2
@@ -200,11 +200,13 @@ i=1;
    endLatencies = [EEG.event(find(strcmp('999',{EEG.event.type}))).latency];
    
    % Go through file and add -45s triggers
-   for l=1:length(endLatencies)
+   for l=1:2:length(EEG.event)
+       if (EEG.event(l).latency - EEG.event(l-1).latency)/512 >=45
        n_events=length(EEG.event);
        EEG.event(n_events+1).type='45';
        EEG.event(n_events+1).latency=(endLatencies(l)-(45*EEG.srate));
        EEG.event(n_events+1).urevent=n_events+1;
+       end
    end
    
    % check for consistency and reorder the events chronologically...
