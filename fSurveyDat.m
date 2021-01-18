@@ -1,7 +1,7 @@
 function  [trialSData_1, trialSData_2] = fSurveyDat(fileName,sData,fDate)
 %% FUNCTION SET-UP
 % create output cellarray
-biosemi = {fileName(1:2) fileName(3:4)};
+biosemi = {fileName(4:5) fileName(6:7)};
 trialName = regexp(fileName,'_','split');
 trialName = trialName{2}(1:end-4);
   gotD = [0 0];
@@ -13,7 +13,7 @@ for iSrvy = 1:size(sData,1)
     sDate = datevec(sDate);
     sDate = [num2str(sDate(3)) '/' num2str(sDate(2)) '/' num2str(sDate(1))];
     %% CHECK IF SAME AS TEST DATA
-    if length(sData.Activity{iSrvy})== length(trialName)...
+    if length(sData.Activity(iSrvy))== length(trialName)...
         && length(sDate) == length(fDate)
         if all(biosemi{1} ==  sData.ParticipantName{iSrvy}(1:2)) == true...  % same subjID
                 && all(sData.Activity{iSrvy}==trialName)==true...             % same trial
