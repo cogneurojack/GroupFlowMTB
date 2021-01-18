@@ -18,9 +18,9 @@ circle = circle^2;
 %% LOAD EACH PAIRS FOLDER & SURVEY DATA
 
 % NEED TO CHANGE TO CSV [num, text, surveyData]= xlsread('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/Data/allSurveyClean.xlsx');
-sData = readtable('/Volumes/HYPERSCAN/groupFlow_B/allSurveyClean.csv');
-matrixFolder = '/Volumes/HYPERSCAN/groupFlow_S/';
-outputFolder = '/Volumes/HYPERSCAN/';
+sData = readtable('E:\\DATA\\groupFlow_B\\allSurveyClean.csv');
+matrixFolder = 'E:\\DATA\\groupFlow_S\\';
+outputFolder = 'E:\\DATA\\';
 infoMat=[];
 % % TEST FOLDERS
 % matrixFolder = '/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/Data/';
@@ -170,9 +170,9 @@ for iFolder = 1:length(matrixFolderInfo)
         dog2 = data(:,19:20);
         
         % work out the shepherding classification
-        cd('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/GroupFlowMTB');
+        cd('C:\Users\Jack Moore\OneDrive - Goldsmiths College\Projects\Group Flow\GroupFlowMTB');
         [dog1_theta, dog2_theta] = cartesian2polar(dog1, dog2, polePos);
-        [dog1Classification, dog2Classification]= ShepherdingClassification(dog1_theta, dog2_theta);
+        [dog1Classification, dog2Classification]= ShepherdingClassification(dog1_theta, dog2_theta, polePos);
        
         
         %% Survey function
