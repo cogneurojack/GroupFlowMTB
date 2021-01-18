@@ -22,13 +22,13 @@
             trlInf(trlNum,7) = EEG.event(i-1).urevent;
             trlInf(trlNum,8) = (EEG.event(i-1).type);
              end
-%             if trlNum == 1 % Appears that event num adds 2 for first trial
-%                 t=t+2;
-%                 trlNum = trlNum+1;
-%             else
+            if trlNum == 1 % Appears that event num adds 2 for first trial
+                t=t+2;
+                trlNum = trlNum+1;
+            else
                 trlNum = trlNum+1;
                 t=t+1;
-            %end
+            end
         end
     end
     

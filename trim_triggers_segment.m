@@ -27,7 +27,7 @@ close all
 format shortG % This sets the format of values toprevent use of power function (so I can see actual values)
 eeglab nogui
 
- for i =11:length('E:\DATA\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
+ for i =[17:23 26 27 30]length('E:\DATA\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
     %% 0) Open trialDat file
     cd('E:\DATA\groupFlow_trialDat\')
     Bx = dir('E:\DATA\groupFlow_trialDat\*.xls');
@@ -132,7 +132,7 @@ eeglab nogui
         '+-45s'})
     
     void = input( ['Input the urevent number of any events that will not be used, such as unused trials' newline...
-        'use the stimComp urevent to seee if there were any trials that were resarted, then compare with ON_urevents: '] ); %INPUT%
+        'use the stimComp urevent to seee if there were any trials that were restarted, then compare with ON_urevents: '] ); %INPUT%
     
     % Delete any unused trials
     idx = cell2mat(cellfun(@(x) ismember(x,void), {EEG.event.urevent},'UniformOutput', false));
@@ -163,13 +163,17 @@ eeglab nogui
             ept_n=ept_n+1;
         end
     end
-   
-    % The last trial is PB and thus never has an end-point event
+    
+    EEG=eeg_checkset(EEG,'eventconsistency');
+    EEG = eeg_checkset( EEG );
+    
+    % If last trial does not have end point trigger
+    if EEG.event(end).type~=endTrig
     EEG.event(n_events+2).type = endTrig;
     EEG.event(n_events+2).latency =((EEG.event(l).latency) + ...
     ((EEG.event(l-1).latency) -(EEG.event(l-2).latency)));
     EEG.event(n_events+2).urevent = n_events+1;
-
+    end
     % Re-save file with only correct events
     if length(EEG.event) ~= size((grpInf),1)*2
         {EEG.event.type}'
@@ -368,7 +372,7 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
 
         dir_trl = [subj1Folder '\\'];
         [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'retrieve',4,'study',0);
-    end
+        end
     
     % clear all EEG file  in preperation for the next pair
     ALLEEG = [];
