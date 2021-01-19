@@ -50,7 +50,7 @@ for iFolder = 1:length(matrixFolderInfo)
     trial = 1;
     % create a variable that will allow us to call each [subjFolder] in
     % turn
-    subjFolder = matrixFolderInfo(iFolder);
+    subjFolder = matrixFolderInfo(iFolder)
     subjFolderName = subjFolder.name;
     subjFolder = [matrixFolder subjFolderName];
     
@@ -195,7 +195,6 @@ if file == 1
         end
         
         
-simpMat = subjOutput;
         
         trial = trial+1;
         file = file+1;
@@ -205,11 +204,12 @@ simpMat = subjOutput;
     %% SAVE EACH GROUP AS AN EXCEL FILE
     % set headers for output data
         
-    outputName = [outputFolder subjFolderName '.csv'];
-    writetable(subjOutput, outputName);
+    outputName = [outputFolder subjFolderName];
+    xlswrite(outputName,table2array(subjOutput));
     infoMatName = [outputFolder 'InfoMatrix.csv'];
     infoMat = [infoMat;subjOutput];
     writetable(infoMat, infoMatName);
-    disp(['script is ' num2str(round((100/numFolder)*iFolder)) '% complete'])
+    clc
+    disp(['script is ' num2str(round((100/numFolder)*iFolder)) '% complete']);
 end
 
