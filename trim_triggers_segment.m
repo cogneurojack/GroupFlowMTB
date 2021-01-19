@@ -110,11 +110,7 @@ eeglab nogui
     EEG = eeg_checkset( EEG );
     
     
-%% 2) Remove start trigger
-%    remove the first event as just trial start event
-    EEG.event(1)=[];
-    
-    EEG = eeg_checkset( EEG );
+
 %% 4) delete any unused trials
 
     % output a table showing the time between each trial

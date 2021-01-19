@@ -23,7 +23,7 @@
             trlInf(trlNum,8) = (EEG.event(i-1).type);
              end
             if trlNum == 1 % Appears that event num adds 2 for first trial
-                t=t+2;
+                t=t+3;
                 trlNum = trlNum+1;
             else
                 trlNum = trlNum+1;
