@@ -376,6 +376,6 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
     
     % clear all EEG file  in preperation for the next pair
     ALLEEG = [];
-
+    trlInf = [];
 
  end
