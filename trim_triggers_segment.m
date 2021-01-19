@@ -27,7 +27,7 @@ close all
 format shortG % This sets the format of values toprevent use of power function (so I can see actual values)
 eeglab nogui
 
- for i =[27:28 30]length('E:\DATA\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
+ for i =[28 30]length('E:\DATA\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
     %% 0) Open trialDat file
     cd('E:\DATA\groupFlow_trialDat\');
     Bx = dir('E:\DATA\groupFlow_trialDat\*.xls');
