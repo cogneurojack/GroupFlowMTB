@@ -27,7 +27,7 @@ close all
 format shortG % This sets the format of values toprevent use of power function (so I can see actual values)
 eeglab nogui
 
- for i =[28 30]length('E:\DATA\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
+ for i =1 % repeating for subjects that had file saved over
     %% 0) Open trialDat file
     cd('E:\DATA\groupFlow_trialDat\');
     Bx = dir('E:\DATA\groupFlow_trialDat\*.xls');
@@ -110,7 +110,11 @@ eeglab nogui
     EEG = eeg_checkset( EEG );
     
     
-
+%% 2) Remove start trigger
+%    remove the first event as just trial start event
+    EEG.event(1)=[];
+    
+    EEG = eeg_checkset( EEG );
 %% 4) delete any unused trials
 
     % output a table showing the time between each trial
@@ -372,6 +376,5 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
     
     % clear all EEG file  in preperation for the next pair
     ALLEEG = [];
-    trlInf = [];
 
  end

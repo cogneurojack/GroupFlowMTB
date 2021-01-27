@@ -27,7 +27,7 @@ close all
 format shortG % This sets the format of values toprevent use of power function (so I can see actual values)
 eeglab nogui
 
- for i =[28 30]length('E:\DATA\groupFlow_trialDat\') % first 4 pairs need to be checked by hand
+ for i =2:3% first 4 pairs need to be checked by hand
     %% 0) Open trialDat file
     cd('E:\DATA\groupFlow_trialDat\');
     Bx = dir('E:\DATA\groupFlow_trialDat\*.xls');
@@ -110,7 +110,11 @@ eeglab nogui
     EEG = eeg_checkset( EEG );
     
     
-
+%% 2) Remove start trigger
+%    remove the first event as just trial start event
+    EEG.event(1)=[];
+    
+    EEG = eeg_checkset( EEG );
 %% 4) delete any unused trials
 
     % output a table showing the time between each trial
@@ -224,7 +228,7 @@ eeglab nogui
     EEG = eeg_checkset( EEG );
     EEG = pop_saveset( EEG, 'savemode','resave');
     [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
-%% 8) Cut file to -1 berfore trial 1
+%% 8) Cut file to -1 before trial 1
 
     EEG = eeg_checkset( EEG );
     EEG = pop_rmdat( EEG, {EEG.event(1).type}, [-1 EEG.pnts/512],0 );
@@ -340,20 +344,16 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
         % Ensure looking at correct data set
         [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,'retrieve',eachSubj*2,'study',0);
         
-        % trigger number
-        trigNum=1;
-        for epoch = 1:size(grpInf,1)
-            % check if +<45s
-            if trlInf(epoch,9)==1, if45 = 2; else; if45 = 1; end 
-            epoch_trial = [(EEG.event(trigNum+if45).latency-EEG.event(trigNum).latency)/512+1]; % get the time of the trial
-     
-            % create file name
-            filename_trl = [EEG.filename(1:end-4) '_t' num2str(epoch) '.set'];
+        
+        idx = cellfun(@length, {EEG.event.type})
+        
+        endTrig = find(idx == 3);
+        startTrig = find(idx > 3);
+        
+        for trl = 1:length(startTrig)
+            EEG = pop_rmdat( EEG, EEG.event(startTrig(trl)).type, [-1 (EEG.event(endTrig(trl)).latency/512)+1],0 );
             
-            % cut our trials
-            EEG = eeg_checkset( EEG );
-            EEG = pop_rmdat( EEG, {EEG.event(trigNum).type}, [-1 epoch_trial],0 ); %cut our trials
-            
+        end
             % save file
             [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, eachSubj*2,'savenew',[dir_trl filename_trl],'gui','off'); %save trial
             if cell2mat({EEG.event(1).type(1)}) == 'b',  EEG.event(1) = []; end
@@ -363,7 +363,7 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
             ALLEEG(5)=[];
             [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 5,'retrieve',eachSubj*2,'study',0);
             trigNum = trigNum+if45+1
-        end
+        
         
 
         dir_trl = [subj1Folder '\\'];
@@ -372,6 +372,5 @@ trigCheck(trig_l,2) = [EEG.event(trig_l).latency]/512;
     
     % clear all EEG file  in preperation for the next pair
     ALLEEG = [];
-    trlInf = [];
 
  end
