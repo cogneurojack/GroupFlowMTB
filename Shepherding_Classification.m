@@ -3,6 +3,9 @@
 %--------------------------------------------------------------------------
 % LOAD THE DATA
 
+clear all
+close all
+clf
 
 dataFolder = '/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/Data/Pilot Data';
 
@@ -62,9 +65,29 @@ dog2 = data(:,19:20);
 %       FREQUENCY IS 0.5 HZ FOR CLASSIFICATION (SUCH THAT BEHAVIOR > 0.5 HZ
 %       IS CLASSIFIED AS COC).
 %--------------------------------------------------------------------------
+<<<<<<< Updated upstream:Shepherding_Classification.m
+=======
+cd('C:\Users\Jack Moore\OneDrive - Goldsmiths College\Projects\Group Flow\GroupFlowMTB\newer old scripts')
+[dog1_theta, dog2_theta, dog1_rad, dog2_rad] = cartesian2polar(dog1, dog2, PolePos);
+>>>>>>> Stashed changes:newer old scripts/Shepherding_Classification.m
 
 cd('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/GroupFlowMTB')
 [dog1Classification, dog2Classification]= ShepherdingClassification(dog1, dog2, PolePos);
 
+<<<<<<< Updated upstream:Shepherding_Classification.m
 cd('/Users/jackmoore/OneDrive - Goldsmiths College/Projects/Group Flow/GroupFlowMTB')
 [dog1_theta, dog2_theta] = cartesian2polar(dog1, dog2, PolePos);
+=======
+%% creating plots to insert into thesis
+x = 1:length(dog1);
+% S&R
+subplot(2,3,1:2)
+plot(x,dog1_theta,x,dog1_rad,x,dog2_theta,x,dog2_rad)
+subplot(2,3,3)
+plot(power1)
+% COC
+subplot(2,3,1:2)
+plot(x,dog1_theta,x,dog1,x,dog2_theta,x,dog2)
+subplot(2,3,3)
+plot(power1)
+>>>>>>> Stashed changes:newer old scripts/Shepherding_Classification.m
